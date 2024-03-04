@@ -1,0 +1,6 @@
+﻿  TileMap.cpp
+C:\Users\roger.canal\source\repos\pang2D_SMRC\pang_SMRC\TileMap.cpp(122,12): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 1 has type 'glm::vec2'
+C:\Users\roger.canal\source\repos\pang2D_SMRC\pang_SMRC\TileMap.cpp(122,12): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 2 has type 'glm::vec2'
+C:\Users\roger.canal\source\repos\pang2D_SMRC\pang_SMRC\TileMap.cpp(125,12): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 1 has type 'glm::vec2'
+C:\Users\roger.canal\source\repos\pang2D_SMRC\pang_SMRC\TileMap.cpp(125,12): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 2 has type 'glm::vec2'
+  pang_SMRC.vcxproj -> C:\Users\roger.canal\source\repos\pang2D_SMRC\Debug\pang_SMRC.exe
