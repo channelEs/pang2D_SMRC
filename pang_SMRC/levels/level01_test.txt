@@ -1,6 +1,6 @@
 TILEMAP
 48 26 							-- Size of tile map in tiles
-8 8							-- Tile size & block size
+16 16							-- Tile size & block size
 assets/blockPang.png 	-- Tilesheet
 1 1 								-- Number of tiles in tilesheet
 111111111111111111111111111111111111111111111111

@@ -1,7 +1,7 @@
 TILEMAP
 36 28 							-- Size of tile map in tiles
 16 32 							-- Tile size & block size
-images/pangAssets_frame02.png 	-- Tilesheet
+assets/pangAssets_frame02.png 	-- Tilesheet
 1 1 								-- Number of tiles in tilesheet
 111111111111111111111111111111111111
 11                                11

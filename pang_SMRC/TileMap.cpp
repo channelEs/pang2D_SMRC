@@ -83,10 +83,9 @@ bool TileMap::loadLevel(const string &levelFile)
 		for(int i=0; i<mapSize.x; i++)
 		{
 			fin.get(tile);
-			if (tile == '0') {
-				map[j*mapSize.x+i] = -1;
-			}
-			else
+			if (tile == '0') 
+				map[j*mapSize.x+i] = 0;
+			else 
 				map[j*mapSize.x+i] = tile - int('0');
 		}
 		fin.get(tile);
@@ -117,12 +116,10 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 				// Non-empty tile
 				nTiles++;
 				posTile = glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize);
-				texCoordTile[0] = glm::vec2(float((tile-1)%tilesheetSize.x) / tilesheetSize.x, float((tile-1)/tilesheetSize.x) / tilesheetSize.y);
+				texCoordTile[0] = glm::vec2(float((tile - 1) % tilesheetSize.x) / tilesheetSize.x, float((tile - 1) / tilesheetSize.x) / tilesheetSize.y);
 				texCoordTile[1] = texCoordTile[0] + tileTexSize;
-				printf("tileX: %f || tileY: %f", texCoordTile[0], texCoordTile[1]);
 				//texCoordTile[0] += halfTexel;
 				texCoordTile[1] -= halfTexel;
-				printf("tileX: %f || tileY: %f", texCoordTile[0], texCoordTile[1]);
 				// First triangle
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
