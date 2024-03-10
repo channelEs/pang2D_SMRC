@@ -9,7 +9,7 @@
 #define SCREEN_Y 16
 
 #define INIT_PLAYER_X_TILES 4
-#define INIT_PLAYER_Y_TILES 23
+#define INIT_PLAYER_Y_TILES 21
 
 
 Scene::Scene()
@@ -35,7 +35,7 @@ void Scene::init()
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH/2), float(SCREEN_HEIGHT/2), 0.f);
 	currentTime = 0.0f;
 }
 
