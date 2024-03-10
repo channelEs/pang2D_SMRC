@@ -111,7 +111,7 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 		for(int i=0; i<mapSize.x; i++)
 		{
 			tile = map[j * mapSize.x + i];
-			if(tile != -1)
+			if(tile != 0)
 			{
 				// Non-empty tile
 				nTiles++;
