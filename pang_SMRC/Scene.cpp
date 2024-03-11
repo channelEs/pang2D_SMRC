@@ -16,6 +16,7 @@ Scene::Scene()
 {
 	map = NULL;
 	player = NULL;
+	balloons = NULL;
 }
 
 Scene::~Scene()
@@ -24,17 +25,41 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
+	if (balloons != NULL)	
+		delete[] balloons;
 }
 
 
 void Scene::init()
 {
 	initShaders();
-	map = TileMap::createTileMap("levels/level01_test.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	level level01;
+	level01.levelPath = "levels/level01_test.txt";
+	level01.numBalloons = 2;
+	// level01.posBalloons.push_back(glm::vec2(4, 15));
+	// level01.posBalloons.push_back(glm::vec2(8, 15));
+	for (int i = 0; i < level01.numBalloons; ++i) {
+		level01.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level01.numBalloons) + (SCREEN_X / level01.numBalloons), 15));
+	}
+
+
+	map = TileMap::createTileMap(level01.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	numBalloons = level01.numBalloons;
+	
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
+
+	balloons = new BalloonPtr[numBalloons];
+	for (int ball = 0; ball < numBalloons; ++ball)
+	{
+		balloons[ball] = new Balloon();
+		balloons[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball%2 == 1));
+		balloons[ball]->setPosition(glm::vec2(level01.posBalloons[ball].x * map->getTileSize(), level01.posBalloons[ball].y * map->getTileSize()));
+		balloons[ball]->setTileMap(map);
+	}
+
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/2), float(SCREEN_HEIGHT/2), 0.f);
 	currentTime = 0.0f;
 }
@@ -43,6 +68,8 @@ void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
+	for (int ball = 0; ball < numBalloons; ++ball)
+		balloons[ball]->update(deltaTime);
 }
 
 void Scene::render()
@@ -57,6 +84,8 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
 	player->render();
+	for (int ball = 0; ball < numBalloons; ++ball)
+		balloons[ball]->render();
 }
 
 void Scene::initShaders()
