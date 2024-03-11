@@ -15,18 +15,29 @@
 Scene::Scene()
 {
 	map = NULL;
+	map02 = NULL;
+	map03 = NULL;
+	map04 = NULL;
 	player = NULL;
-	balloons = NULL;
+	balloonsVec = std::vector<Balloon*>();
 }
 
 Scene::~Scene()
 {
 	if(map != NULL)
 		delete map;
+	if (map02 != NULL)
+		delete map02;
+	if (map03 != NULL)
+		delete map03;
+	if (map04 != NULL)
+		delete map04;
 	if(player != NULL)
 		delete player;
-	if (balloons != NULL)	
-		delete[] balloons;
+	for (auto balloon : balloonsVec) {
+		delete balloon;
+	}
+	balloonsVec.clear();
 }
 
 
@@ -34,16 +45,17 @@ void Scene::init()
 {
 	initShaders();
 	level level01;
-	level01.levelPath = "levels/level01_test.txt";
+	level01.levelPath = "levels/map_blocks.txt";
 	level01.numBalloons = 2;
-	// level01.posBalloons.push_back(glm::vec2(4, 15));
-	// level01.posBalloons.push_back(glm::vec2(8, 15));
 	for (int i = 0; i < level01.numBalloons; ++i) {
 		level01.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level01.numBalloons) + (SCREEN_X / level01.numBalloons), 15));
 	}
 
-
 	map = TileMap::createTileMap(level01.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map02 = TileMap::createTileMap("levels/level02_floors.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map03 = TileMap::createTileMap("levels/level02_stairs.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);	
+	map04 = TileMap::createTileMap("levels/level02_ghosts.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+
 	numBalloons = level01.numBalloons;
 	
 	player = new Player();
@@ -51,13 +63,15 @@ void Scene::init()
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
 
-	balloons = new BalloonPtr[numBalloons];
 	for (int ball = 0; ball < numBalloons; ++ball)
 	{
-		balloons[ball] = new Balloon();
-		balloons[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball%2 == 1));
-		balloons[ball]->setPosition(glm::vec2(level01.posBalloons[ball].x * map->getTileSize(), level01.posBalloons[ball].y * map->getTileSize()));
-		balloons[ball]->setTileMap(map);
+		glm::ivec2 size;
+		if (ball == 0) size = glm::ivec2(48, 48);
+		else size = glm::ivec2(24, 24);
+		balloonsVec.push_back(new Balloon());
+		balloonsVec[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball % 2 == 1), size);
+		balloonsVec[ball]->setPosition(glm::vec2(level01.posBalloons[ball].x * map->getTileSize(), level01.posBalloons[ball].y * map->getTileSize()));
+		balloonsVec[ball]->setTileMap(map);
 	}
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/2), float(SCREEN_HEIGHT/2), 0.f);
@@ -69,7 +83,7 @@ void Scene::update(int deltaTime)
 	currentTime += deltaTime;
 	player->update(deltaTime);
 	for (int ball = 0; ball < numBalloons; ++ball)
-		balloons[ball]->update(deltaTime);
+		balloonsVec[ball]->update(deltaTime);
 }
 
 void Scene::render()
@@ -83,9 +97,12 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
+	map02->render();
+	map03->render();
+	map04->render();
 	player->render();
 	for (int ball = 0; ball < numBalloons; ++ball)
-		balloons[ball]->render();
+		balloonsVec[ball]->render();
 }
 
 void Scene::initShaders()

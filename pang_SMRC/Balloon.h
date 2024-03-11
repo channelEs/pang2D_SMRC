@@ -7,7 +7,7 @@
 class Balloon
 {
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, bool startLeft);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, bool startLeft, glm::ivec2& size);
 	void update(int deltaTime);
 	void render();
 
@@ -17,7 +17,7 @@ public:
 private:
 	bool bJumping;
 	bool movingLeft;
-	glm::ivec2 tileMapDispl, posBalloon;
+	glm::ivec2 tileMapDispl, posBalloon, sizeBalloon;
 	int jumpAngle, startY;
 	Texture spritesheet;
 	Sprite *sprite;

@@ -8,8 +8,6 @@
 #include "Player.h"
 #include "Balloon.h"
 
-typedef Balloon* BalloonPtr;
-
 struct level {
 	string levelPath;
 	int numBalloons;
@@ -35,9 +33,9 @@ private:
 	void initShaders();
 
 private:
-	TileMap *map;
+	TileMap *map, *map02, *map03, *map04;
 	Player *player;
-	BalloonPtr* balloons;
+	std::vector<Balloon*> balloonsVec;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

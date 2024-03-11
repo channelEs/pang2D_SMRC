@@ -9,13 +9,15 @@
 #define FALL_STEP 4
 #define MOVE_STEP 2
 
-void Balloon::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, bool startLeft)
+void Balloon::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, bool startLeft, glm::ivec2& size)
 {
-	spritesheet.loadFromFile("assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	spritesheet.loadFromFile("assets/balloonsQUAD.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 0.5), &spritesheet, &shaderProgram);
+	sizeBalloon = size;
 	bJumping = false;
 	movingLeft = startLeft;
+	
+	sprite = Sprite::createSprite(sizeBalloon, glm::vec2(0.5, 0.5), &spritesheet, &shaderProgram);
 
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBalloon.x), float(tileMapDispl.y + posBalloon.y)));
@@ -43,7 +45,7 @@ void Balloon::update(int deltaTime)
 	else
 	{
 		posBalloon.y += FALL_STEP;
-		if (map->collisionMoveDown(posBalloon, glm::ivec2(32, 32), &posBalloon.y))
+		if (map->collisionMoveDown(posBalloon, sizeBalloon, &posBalloon.y))
 		{
 			bJumping = true;
 			jumpAngle = 0;
@@ -54,18 +56,18 @@ void Balloon::update(int deltaTime)
 	if (movingLeft)
 	{
 		posBalloon.x -= MOVE_STEP;
-		if (map->collisionMoveLeft(posBalloon, glm::ivec2(32, 32)))
+		if (map->collisionMoveLeft(posBalloon, sizeBalloon))
 		{
-			// posBalloon.x += MOVE_STEP;
+			posBalloon.x += MOVE_STEP;
 			movingLeft = false;
 		}
 	}
 	else 
 	{
 		posBalloon.x += MOVE_STEP;
-		if (map->collisionMoveRight(posBalloon, glm::ivec2(32, 32)))
+		if (map->collisionMoveRight(posBalloon, sizeBalloon))
 		{
-			// posBalloon.x -= MOVE_STEP;
+			posBalloon.x -= MOVE_STEP;
 			movingLeft = true;
 		}
 	}
