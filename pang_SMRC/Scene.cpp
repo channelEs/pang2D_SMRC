@@ -50,7 +50,6 @@ void Scene::init()
 	for (int i = 0; i < level01.numBalloons; ++i) {
 		level01.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level01.numBalloons) + (SCREEN_X / level01.numBalloons), 15));
 	}
-
 	map = TileMap::createTileMap(level01.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map02 = TileMap::createTileMap("levels/level02_floors.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	map03 = TileMap::createTileMap("levels/level02_stairs.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);	
@@ -63,6 +62,10 @@ void Scene::init()
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
 
+	bang = new Bang();
+	bang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	bang->setTileMap(map);
+	bang->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	for (int ball = 0; ball < numBalloons; ++ball)
 	{
 		glm::ivec2 size;
@@ -84,6 +87,7 @@ void Scene::update(int deltaTime)
 	player->update(deltaTime);
 	for (int ball = 0; ball < numBalloons; ++ball)
 		balloonsVec[ball]->update(deltaTime);
+	bang->update(deltaTime);
 }
 
 void Scene::render()
@@ -103,6 +107,9 @@ void Scene::render()
 	player->render();
 	for (int ball = 0; ball < numBalloons; ++ball)
 		balloonsVec[ball]->render();
+	if (bang->getClicked()) {
+		bang->render();
+	}
 }
 
 void Scene::initShaders()

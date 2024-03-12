@@ -7,6 +7,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Balloon.h"
+#include "Bang.h"
 
 struct level {
 	string levelPath;
@@ -33,8 +34,9 @@ private:
 	void initShaders();
 
 private:
-	TileMap *map, *map02, *map03, *map04;
+	TileMap *map, *map02, *map03, *map04;;
 	Player *player;
+	Bang *bang;
 	std::vector<Balloon*> balloonsVec;
 	ShaderProgram texProgram;
 	float currentTime;
