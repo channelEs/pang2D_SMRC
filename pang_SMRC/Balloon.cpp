@@ -35,6 +35,11 @@ void Balloon::update(int deltaTime)
 			bJumping = false;
 			posBalloon.y = startY;
 		}
+		else if (map->collisionMoveUp(posBalloon, sizeBalloon) != -1)
+		{
+			if (map->collisionCircularZones(posBalloon, sizeBalloon, 0) || map->collisionCircularZones(posBalloon, sizeBalloon, 1) || map->collisionCircularZones(posBalloon, sizeBalloon, 2))
+				bJumping = false;
+		}
 		else
 		{
 			posBalloon.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
@@ -45,30 +50,39 @@ void Balloon::update(int deltaTime)
 	else
 	{
 		posBalloon.y += FALL_STEP;
-		if (map->collisionMoveDown(posBalloon, sizeBalloon, &posBalloon.y))
+		if (map->collisionMoveDown(posBalloon, sizeBalloon, &posBalloon.y) != -1)
 		{
-			bJumping = true;
-			jumpAngle = 0;
-			startY = posBalloon.y;
+			if (map->collisionCircularZones(posBalloon, sizeBalloon, 6) || map->collisionCircularZones(posBalloon, sizeBalloon, 5) || map->collisionCircularZones(posBalloon, sizeBalloon, 4))
+			{
+				bJumping = true;
+				jumpAngle = 0;
+				startY = posBalloon.y;
+			}
 		}
 	}
 
 	if (movingLeft)
 	{
 		posBalloon.x -= MOVE_STEP;
-		if (map->collisionMoveLeft(posBalloon, sizeBalloon))
+		if (map->collisionMoveLeft(posBalloon, sizeBalloon) != -1)
 		{
-			posBalloon.x += MOVE_STEP;
-			movingLeft = false;
+			if (map->collisionCircularZones(posBalloon, sizeBalloon, 0) || map->collisionCircularZones(posBalloon, sizeBalloon, 7) || map->collisionCircularZones(posBalloon, sizeBalloon, 6))
+			{
+				posBalloon.x += MOVE_STEP;
+				movingLeft = false;
+			}
 		}
 	}
 	else 
 	{
 		posBalloon.x += MOVE_STEP;
-		if (map->collisionMoveRight(posBalloon, sizeBalloon))
+		if (map->collisionMoveRight(posBalloon, sizeBalloon) != -1)
 		{
-			posBalloon.x -= MOVE_STEP;
-			movingLeft = true;
+			if (map->collisionCircularZones(posBalloon, sizeBalloon, 2) || map->collisionCircularZones(posBalloon, sizeBalloon, 3) || map->collisionCircularZones(posBalloon, sizeBalloon, 4))
+			{
+				posBalloon.x -= MOVE_STEP;
+				movingLeft = true;
+			}
 		}
 	}
 

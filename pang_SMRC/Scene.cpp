@@ -5,8 +5,8 @@
 #include "Game.h"
 
 
-#define SCREEN_X 32
-#define SCREEN_Y 16
+#define SCREEN_X 0
+#define SCREEN_Y 0
 
 #define INIT_PLAYER_X_TILES 4
 #define INIT_PLAYER_Y_TILES 21
@@ -15,9 +15,6 @@
 Scene::Scene()
 {
 	map = NULL;
-	map02 = NULL;
-	map03 = NULL;
-	map04 = NULL;
 	player = NULL;
 	balloonsVec = std::vector<Balloon*>();
 }
@@ -26,12 +23,6 @@ Scene::~Scene()
 {
 	if(map != NULL)
 		delete map;
-	if (map02 != NULL)
-		delete map02;
-	if (map03 != NULL)
-		delete map03;
-	if (map04 != NULL)
-		delete map04;
 	if(player != NULL)
 		delete player;
 	for (auto balloon : balloonsVec) {
@@ -45,15 +36,12 @@ void Scene::init()
 {
 	initShaders();
 	level level01;
-	level01.levelPath = "levels/map_blocks.txt";
+	level01.levelPath = "levels/level02_MAP.txt";
 	level01.numBalloons = 2;
 	for (int i = 0; i < level01.numBalloons; ++i) {
-		level01.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level01.numBalloons) + (SCREEN_X / level01.numBalloons), 15));
+		level01.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level01.numBalloons) + (SCREEN_X / level01.numBalloons), 1));
 	}
 	map = TileMap::createTileMap(level01.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map02 = TileMap::createTileMap("levels/level02_floors.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	map03 = TileMap::createTileMap("levels/level02_stairs.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);	
-	map04 = TileMap::createTileMap("levels/level02_ghosts.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 
 	numBalloons = level01.numBalloons;
 	
@@ -66,6 +54,7 @@ void Scene::init()
 	bang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	bang->setTileMap(map);
 	bang->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	
 	for (int ball = 0; ball < numBalloons; ++ball)
 	{
 		glm::ivec2 size;
@@ -101,9 +90,6 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
-	map02->render();
-	map03->render();
-	map04->render();
 	player->render();
 	for (int ball = 0; ball < numBalloons; ++ball)
 		balloonsVec[ball]->render();

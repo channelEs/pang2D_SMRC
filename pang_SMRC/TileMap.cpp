@@ -157,44 +157,44 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 // Method collisionMoveDown also corrects Y coordinate if the box is
 // already intersecting a tile below.
 
-bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
+int TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y0, y1;
 	
-	x = pos.x / tileSize;
+	x = (pos.x + 2) / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
 		if(map[y*mapSize.x+x] != -1)
-			return true;
+			return map[y * mapSize.x + x];
 	}
 	
-	return false;
+	return -1;
 }
 
-bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
+int TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y0, y1;
 	
-	x = (pos.x + size.x - 1) / tileSize;
+	x = (pos.x + size.x - 3) / tileSize;
 	y0 = pos.y / tileSize;
 	y1 = (pos.y + size.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
 		if(map[y*mapSize.x+x] != -1)
-			return true;
+			return map[y * mapSize.x + x];
 	}
 	
-	return false;
+	return -1;
 }
 
-bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+int TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
 {
 	int x0, x1, y;
 	
-	x0 = pos.x / tileSize;
-	x1 = (pos.x + size.x - 1) / tileSize;
+	x0 = (pos.x + size.x*0.20) / tileSize;
+	x1 = (pos.x + size.x*0.80) / tileSize;
 	y = (pos.y + size.y - 1) / tileSize;
 	for(int x=x0; x<=x1; x++)
 	{
@@ -203,11 +203,44 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 			if(*posY - tileSize * y + size.y <= 4)
 			{
 				*posY = tileSize * y - size.y;
-				return true;
+				return map[y * mapSize.x + x];
 			}
 		}
 	}
 	
+	return -1;
+}
+
+int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size) const
+{
+	int x0, x1, y;
+
+	x0 = pos.x / tileSize;
+	x1 = (pos.x + size.x - 1) / tileSize;
+	y = pos.y / tileSize;
+	for (int x = x0; x <= x1; x++)
+	{
+		if (map[y * mapSize.x + x] != -1)
+			return map[y * mapSize.x + x];
+	}
+	return -1;
+}
+
+bool TileMap::collisionCircularZones(const glm::ivec2& pos, const glm::ivec2& size, const int& zone) const
+{
+	int x, y;
+	if (zone == 0) { x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.25) / tileSize; }
+	if (zone == 1) { x = (pos.x + size.x * 0.5) / tileSize; y = (pos.y) / tileSize; }
+	if (zone == 2) { x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.25) / tileSize; }
+	if (zone == 3) { x = (pos.x + size.x * 1) / tileSize; y = (pos.y + size.y * 0.5) / tileSize; }
+	if (zone == 4) { x = (pos.x + size.x * 0.75) / tileSize; y = (pos.y + size.y * 0.75) / tileSize; }
+	if (zone == 5) { x = (pos.x + size.x * 0.5) / tileSize; y = (pos.y + size.y * 1) / tileSize; }
+	if (zone == 6) { x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.75) / tileSize; }
+	if (zone == 7) { x = (pos.x) / tileSize; y = (pos.y + size.y * 0.5) / tileSize; }
+
+	if (map[y * mapSize.x + x] != -1)
+		return true;
+
 	return false;
 }
 

@@ -4,10 +4,15 @@
 
 #include <GLFW/glfw3.h>
 #include "Scene.h"
+#include "Instructions.h"
 
 
-#define SCREEN_WIDTH 850
-#define SCREEN_HEIGHT 450
+#define SCREEN_WIDTH 48*8*2
+#define SCREEN_HEIGHT 26*8*2
+
+#define ID_BLOCKS_BRICK_V 20
+#define ID_BLOCKS_BRICK_H_01 24
+#define ID_BLOCKS_BRICK_H_02 25
 
 
 // Game is a singleton (a class with a single instance) that represents our whole application
@@ -45,6 +50,7 @@ private:
 	bool keys[GLFW_KEY_LAST+1]; // Store key states so that 
 							    // we can have access at any time
 	Scene scene;
+	Instructions instructions;
 
 };
 

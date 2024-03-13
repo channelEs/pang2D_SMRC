@@ -34,7 +34,7 @@ private:
 	void initShaders();
 
 private:
-	TileMap *map, *map02, *map03, *map04;;
+	TileMap *map;
 	Player *player;
 	Bang *bang;
 	std::vector<Balloon*> balloonsVec;

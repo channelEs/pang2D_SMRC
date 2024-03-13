@@ -15,6 +15,7 @@
     <ClInclude Include="Balloon.h" />
     <ClInclude Include="Bang.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Instructions.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
@@ -27,6 +28,7 @@
     <ClCompile Include="Balloon.cpp" />
     <ClCompile Include="Bang.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Instructions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
