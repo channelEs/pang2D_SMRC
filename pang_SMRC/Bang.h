@@ -19,6 +19,7 @@ private:
 	bool clicked;
 	glm::ivec2 tileMapDispl, posFire, sizeFire;
 	int jumpAngle, startY;
+	int reloadTimer;
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;

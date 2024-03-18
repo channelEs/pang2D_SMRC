@@ -17,6 +17,7 @@ Scene::Scene()
 	map = NULL;
 	player = NULL;
 	balloonsVec = std::vector<Balloon*>();
+
 }
 
 Scene::~Scene()
@@ -28,7 +29,9 @@ Scene::~Scene()
 	for (auto balloon : balloonsVec) {
 		delete balloon;
 	}
+
 	balloonsVec.clear();
+	bangs.clear();
 }
 
 
@@ -74,9 +77,30 @@ void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
-	for (int ball = 0; ball < numBalloons; ++ball)
+
+	for (int ball = 0; ball < numBalloons; ++ball) {
 		balloonsVec[ball]->update(deltaTime);
-	bang->update(deltaTime);
+	}
+
+	if (Game::instance().getKey(GLFW_KEY_C)) {
+		Bang* newBang = new Bang();
+		newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+		newBang->setTileMap(map);
+		newBang->setPosition(player->getPosition());
+		bangs.push_back(newBang);
+	}
+
+	// Actualizar y limpiar los disparos
+	for (int i = 0; i < bangs.size(); ++i) {
+		bangs[i]->update(deltaTime);
+	}
+
+	for (int i = bangs.size() - 1; i >= 0; --i) {
+		if (!bangs[i]->getClicked()) {
+			delete bangs[i];
+			bangs.erase(bangs.begin() + i);
+		}
+	}
 }
 
 void Scene::render()
@@ -93,7 +117,7 @@ void Scene::render()
 	player->render();
 	for (int ball = 0; ball < numBalloons; ++ball)
 		balloonsVec[ball]->render();
-	if (bang->getClicked()) {
+	for (auto& bang : bangs) {
 		bang->render();
 	}
 }

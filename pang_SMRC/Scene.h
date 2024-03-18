@@ -42,6 +42,7 @@ private:
 	float currentTime;
 	glm::mat4 projection;
 	int numBalloons;
+	std::vector<Bang*> bangs;
 
 };
 
