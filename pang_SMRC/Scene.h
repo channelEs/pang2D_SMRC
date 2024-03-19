@@ -42,8 +42,8 @@ private:
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-
-	int numBalloons;						// number of balloons active
+	int numBalloons;
+	std::vector<Bang*> bangs;
 
 };
 
