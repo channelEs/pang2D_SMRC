@@ -102,7 +102,7 @@ void Scene::update(int deltaTime)
 	}
 	for (int bang = 0; bang < bangs.size(); ++bang) {
 		bangs[bang]->update(deltaTime);
-		if (bangs[bang]->getPosY() <= 2) {
+		if (map->collisionMoveUp(bangs[bang]->getPos(), glm::ivec2(8, 8)) != -1) {
 			delete bangs[bang];
 			for (int i = bang + 1; i < bangs.size(); ++i) {
 				bangs[i - 1] = bangs[i];
@@ -110,9 +110,6 @@ void Scene::update(int deltaTime)
 			bangs.pop_back();
 		}
 	}
-
-
-	
 }
 
 void Scene::render()

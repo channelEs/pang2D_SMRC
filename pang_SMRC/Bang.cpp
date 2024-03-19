@@ -48,6 +48,6 @@ void Bang::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posFire.x), float(tileMapDispl.y + posFire.y)));
 }
 
-int Bang::getPosY() {
-	return posFire.y;
+glm::ivec2 Bang::getPos() {
+	return posFire;
 }

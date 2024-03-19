@@ -13,7 +13,7 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
-	int getPosY();
+	glm::ivec2 getPos();
 
 
 private:
