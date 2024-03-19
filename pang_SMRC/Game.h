@@ -7,8 +7,8 @@
 #include "Instructions.h"
 
 
-#define SCREEN_WIDTH 48*8*2
-#define SCREEN_HEIGHT 26*8*2
+#define SCREEN_WIDTH 48*8*4
+#define SCREEN_HEIGHT 26*8*4
 
 #define ID_BLOCKS_BRICK_V 20
 #define ID_BLOCKS_BRICK_H_01 24

@@ -53,6 +53,9 @@ void Game::keyPressed(int key)
 		++inLevel;
 		if (inLevel == 2) inLevel = 0;
 	}
+	if (key == GLFW_KEY_C) {
+		scenes[inLevel]->generateBang();
+	}
 	keys[key] = true;
 }
 

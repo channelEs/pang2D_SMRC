@@ -14,7 +14,6 @@ void Bang::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	spritesheet.loadFromFile("assets/bang.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
 	glm::ivec2  sizeFire = glm::ivec2(8, 8);
-	clicked = false;
 	reloadTimer = 0;
 
 	sprite = Sprite::createSprite(sizeFire, glm::vec2(0.5, 0.5), &spritesheet, &shaderProgram);
@@ -26,9 +25,7 @@ void Bang::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 void Bang::update(int deltaTime)
 {
     sprite->update(deltaTime);
-
-
-
+	posFire.y -= 2;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posFire.x), float(tileMapDispl.y + posFire.y)));
 }
 
@@ -51,6 +48,6 @@ void Bang::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posFire.x), float(tileMapDispl.y + posFire.y)));
 }
 
-bool Bang::getClicked() {
-	return clicked;
+int Bang::getPosY() {
+	return posFire.y;
 }

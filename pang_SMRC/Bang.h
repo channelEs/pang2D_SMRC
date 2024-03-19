@@ -13,10 +13,10 @@ public:
 
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
-	bool getClicked();
+	int getPosY();
+
 
 private:
-	bool clicked;
 	glm::ivec2 tileMapDispl, posFire, sizeFire;
 	int jumpAngle, startY;
 	int reloadTimer;

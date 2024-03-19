@@ -29,6 +29,7 @@ public:
 	void init(int lvlNum);
 	void update(int deltaTime);
 	void render();
+	void generateBang();
 
 private:
 	void initShaders();
@@ -44,6 +45,7 @@ private:
 	glm::mat4 projection;
 	int numBalloons;
 	std::vector<Bang*> bangs;
+	bool bangClicked;
 
 };
 

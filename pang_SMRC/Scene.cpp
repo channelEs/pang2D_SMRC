@@ -29,7 +29,9 @@ Scene::~Scene()
 	for (auto balloon : balloonsVec) {
 		delete balloon;
 	}
-
+	for (auto bang : bangs) {
+		delete bang;
+	}
 	balloonsVec.clear();
 	bangs.clear();
 }
@@ -86,7 +88,7 @@ void Scene::init(int lvlNum)
 		balloonsVec[ball]->setTileMap(map);
 	}
 
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH/2), float(SCREEN_HEIGHT/2), 0.f);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH/4), float(SCREEN_HEIGHT/4), 0.f);
 	currentTime = 0.0f;
 }
 
@@ -98,26 +100,19 @@ void Scene::update(int deltaTime)
 	for (int ball = 0; ball < numBalloons; ++ball) {
 		balloonsVec[ball]->update(deltaTime);
 	}
-
-	if (Game::instance().getKey(GLFW_KEY_C)) {
-		Bang* newBang = new Bang();
-		newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-		newBang->setTileMap(map);
-		newBang->setPosition(player->getPosition());
-		bangs.push_back(newBang);
-	}
-
-	// Actualizar y limpiar los disparos
-	for (int i = 0; i < bangs.size(); ++i) {
-		bangs[i]->update(deltaTime);
-	}
-
-	for (int i = bangs.size() - 1; i >= 0; --i) {
-		if (!bangs[i]->getClicked()) {
-			delete bangs[i];
-			bangs.erase(bangs.begin() + i);
+	for (int bang = 0; bang < bangs.size(); ++bang) {
+		bangs[bang]->update(deltaTime);
+		if (bangs[bang]->getPosY() <= 2) {
+			delete bangs[bang];
+			for (int i = bang + 1; i < bangs.size(); ++i) {
+				bangs[i - 1] = bangs[i];
+			}
+			bangs.pop_back();
 		}
 	}
+
+
+	
 }
 
 void Scene::render()
@@ -167,6 +162,14 @@ void Scene::initShaders()
 	texProgram.bindFragmentOutput("outColor");
 	vShader.free();
 	fShader.free();
+}
+
+void Scene::generateBang() {
+	Bang* newBang = new Bang();
+	newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	newBang->setTileMap(map);
+	newBang->setPosition(player->getPosition());
+	bangs.push_back(newBang);
 }
 
 
