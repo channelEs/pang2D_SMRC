@@ -226,22 +226,58 @@ int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size) cons
 	return -1;
 }
 
-bool TileMap::collisionCircularZones(const glm::ivec2& pos, const glm::ivec2& size, const int& zone) const
+int TileMap::collisionCircularZones(const glm::ivec2& pos, const glm::ivec2& size) const
 {
 	int x, y;
-	if (zone == 0) { x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.25) / tileSize; }
-	if (zone == 1) { x = (pos.x + size.x * 0.5) / tileSize; y = (pos.y) / tileSize; }
-	if (zone == 2) { x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.25) / tileSize; }
-	if (zone == 3) { x = (pos.x + size.x * 1) / tileSize; y = (pos.y + size.y * 0.5) / tileSize; }
-	if (zone == 4) { x = (pos.x + size.x * 0.75) / tileSize; y = (pos.y + size.y * 0.75) / tileSize; }
-	if (zone == 5) { x = (pos.x + size.x * 0.5) / tileSize; y = (pos.y + size.y * 1) / tileSize; }
-	if (zone == 6) { x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.75) / tileSize; }
-	if (zone == 7) { x = (pos.x) / tileSize; y = (pos.y + size.y * 0.5) / tileSize; }
+	/*
+			 0
+			___	
+		   /   \	
+		7 /     \  1
+		 /		 \
+		|		  |
+	  6	|		  |  2
+		|	      |
+		 \	     /
+		5 \	    /  3
+		   \___/
+			 4
+	*/
 
+	x = (pos.x + size.x * 0.5) / tileSize; y = (pos.y) / tileSize; 
 	if (map[y * mapSize.x + x] != -1)
-		return true;
+		return 0;
 
-	return false;
+	x = (pos.x + size.x * 0.75) / tileSize; y = (pos.y + size.y * 0.25) / tileSize; 
+	if (map[y * mapSize.x + x] != -1)
+		return 1;
+
+	x = (pos.x + size.x * 1) / tileSize; y = (pos.y + size.y * 0.5) / tileSize; 
+	if (map[y * mapSize.x + x] != -1)
+		return 2;
+
+	x = (pos.x + size.x * 0.75) / tileSize; y = (pos.y + size.y * 0.75) / tileSize; 
+	if (map[y * mapSize.x + x] != -1)
+		return 3;
+	
+	x = (pos.x + size.x * 0.5) / tileSize; y = (pos.y + size.y * 1) / tileSize;
+	if (map[y * mapSize.x + x] != -1)
+		return 4;
+
+	x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.75) / tileSize; 
+	if (map[y * mapSize.x + x] != -1)
+		return 5;
+	
+	x = (pos.x) / tileSize; y = (pos.y + size.y * 0.5) / tileSize;
+	if (map[y * mapSize.x + x] != -1)
+		return 6;
+
+	x = (pos.x + size.x * 0.25) / tileSize; y = (pos.y + size.y * 0.25) / tileSize;
+	if (map[y * mapSize.x + x] != -1)
+		return 7;
+
+
+	return -1;
 }
 
 

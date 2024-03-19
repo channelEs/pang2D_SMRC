@@ -32,29 +32,46 @@ Scene::~Scene()
 }
 
 
-void Scene::init()
+void Scene::init(int lvlNum)
 {
 	initShaders();
-	level level01;
-	level01.levelPath = "levels/level02_MAP.txt";
-	level01.numBalloons = 2;
-	for (int i = 0; i < level01.numBalloons; ++i) {
-		level01.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level01.numBalloons) + (SCREEN_X / level01.numBalloons), 1));
-	}
-	map = TileMap::createTileMap(level01.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 
-	numBalloons = level01.numBalloons;
+	level level;
+	// SET LEVEL
+	if (lvlNum == 0)
+	{
+		level.levelPath = "levels/level01_MAP.txt";
+		level.numBalloons = 4;
+		for (int i = 0; i < level.numBalloons; ++i) {
+			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
+		}
+	}
+	else if (lvlNum == 1)
+	{
+		level.levelPath = "levels/level02_MAP.txt";
+		level.numBalloons = 2;
+		for (int i = 0; i < level.numBalloons; ++i) {
+			level.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level.numBalloons) + (SCREEN_X / level.numBalloons), 1));
+		}
+	}
+
+
+	map = TileMap::createTileMap(level.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	numBalloons = level.numBalloons;
 	
+	// INIT PLAYER
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
 
+	// INIT SHOTS
 	bang = new Bang();
 	bang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	bang->setTileMap(map);
 	bang->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	
+	// INIT BALLOONS
 	for (int ball = 0; ball < numBalloons; ++ball)
 	{
 		glm::ivec2 size;
@@ -62,7 +79,7 @@ void Scene::init()
 		else size = glm::ivec2(24, 24);
 		balloonsVec.push_back(new Balloon());
 		balloonsVec[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball % 2 == 1), size);
-		balloonsVec[ball]->setPosition(glm::vec2(level01.posBalloons[ball].x * map->getTileSize(), level01.posBalloons[ball].y * map->getTileSize()));
+		balloonsVec[ball]->setPosition(glm::vec2(level.posBalloons[ball].x * map->getTileSize(), level.posBalloons[ball].y * map->getTileSize()));
 		balloonsVec[ball]->setTileMap(map);
 	}
 

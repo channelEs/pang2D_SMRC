@@ -9,7 +9,12 @@ void Game::init()
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 
 	instructions.init();
-	scene.init();
+	int numLevels = 2;
+	for (int i = 0; i < numLevels; ++i) {
+		scenes.push_back(new Scene());
+		scenes[i]->init(i);
+	}
+	inLevel = 0;
 }
 
 bool Game::update(int deltaTime)
@@ -20,7 +25,7 @@ bool Game::update(int deltaTime)
 	}
 	else
 	{
-		scene.update(deltaTime);
+		scenes[inLevel]->update(deltaTime);
 	}
 
 	return bPlay;
@@ -35,7 +40,7 @@ void Game::render()
 	}
 	else
 	{
-		scene.render();
+		scenes[inLevel]->render();
 	}
 }
 
@@ -43,6 +48,11 @@ void Game::keyPressed(int key)
 {
 	if(key == GLFW_KEY_ESCAPE) // Escape code
 		bPlay = false;
+	if (key == GLFW_KEY_N)
+	{
+		++inLevel;
+		if (inLevel == 2) inLevel = 0;
+	}
 	keys[key] = true;
 }
 

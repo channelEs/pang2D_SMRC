@@ -26,7 +26,7 @@ public:
 	Scene();
 	~Scene();
 
-	void init();
+	void init(int lvlNum);
 	void update(int deltaTime);
 	void render();
 
@@ -34,14 +34,16 @@ private:
 	void initShaders();
 
 private:
-	TileMap *map;
-	Player *player;
-	Bang *bang;
-	std::vector<Balloon*> balloonsVec;
+	TileMap *map;							// tileMap active
+	Player *player;							// instance of the player
+	Bang *bang;								// shots
+	std::vector<Balloon*> balloonsVec;		// array of instances for every Balloon active
+	
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-	int numBalloons;
+
+	int numBalloons;						// number of balloons active
 
 };
 

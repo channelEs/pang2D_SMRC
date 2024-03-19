@@ -5,7 +5,6 @@
 #include "Game.h"
 
 #define JUMP_ANGLE_STEP 2
-#define JUMP_HEIGHT 96
 #define FALL_STEP 4
 #define MOVE_STEP 2
 
@@ -26,66 +25,70 @@ void Balloon::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, b
 void Balloon::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+	int newPosY, newPosX;
 
+	int colision;
+	
 	if (bJumping)
 	{
 		jumpAngle += JUMP_ANGLE_STEP;
+
 		if (jumpAngle == 180)
 		{
 			bJumping = false;
-			posBalloon.y = startY;
-		}
-		else if (map->collisionMoveUp(posBalloon, sizeBalloon) != -1)
-		{
-			if (map->collisionCircularZones(posBalloon, sizeBalloon, 0) || map->collisionCircularZones(posBalloon, sizeBalloon, 1) || map->collisionCircularZones(posBalloon, sizeBalloon, 2))
-				bJumping = false;
+			newPosY = startY;
+			// posBalloon.y = startY;
 		}
 		else
 		{
-			posBalloon.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
+			newPosY = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
+			colision = map->collisionCircularZones(glm::ivec2(posBalloon.x, newPosY), sizeBalloon);
+			if (colision == 0 || colision == 7 || colision == 1)
+			{ 
+				bJumping = false;
+			}
+
+			// posBalloon.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 			if (jumpAngle > 90)
 				bJumping = true;
 		}
 	}
 	else
 	{
-		posBalloon.y += FALL_STEP;
-		if (map->collisionMoveDown(posBalloon, sizeBalloon, &posBalloon.y) != -1)
+		newPosY = posBalloon.y + FALL_STEP;
+		colision = map->collisionCircularZones(glm::ivec2(posBalloon.x, newPosY), sizeBalloon);
+		// posBalloon.y += FALL_STEP;
+		if (colision == 5 || colision == 4 || colision == 3)
 		{
-			if (map->collisionCircularZones(posBalloon, sizeBalloon, 6) || map->collisionCircularZones(posBalloon, sizeBalloon, 5) || map->collisionCircularZones(posBalloon, sizeBalloon, 4))
-			{
-				bJumping = true;
-				jumpAngle = 0;
-				startY = posBalloon.y;
-			}
+			bJumping = true;
+			jumpAngle = 0;
+			startY = posBalloon.y;
 		}
 	}
 
 	if (movingLeft)
 	{
-		posBalloon.x -= MOVE_STEP;
-		if (map->collisionMoveLeft(posBalloon, sizeBalloon) != -1)
+		newPosX = posBalloon.x - MOVE_STEP;
+		colision = map->collisionCircularZones(glm::ivec2(newPosX, newPosY), sizeBalloon);
+		if (colision == 7 || colision == 6 || colision == 5)
 		{
-			if (map->collisionCircularZones(posBalloon, sizeBalloon, 0) || map->collisionCircularZones(posBalloon, sizeBalloon, 7) || map->collisionCircularZones(posBalloon, sizeBalloon, 6))
-			{
-				posBalloon.x += MOVE_STEP;
-				movingLeft = false;
-			}
+			newPosX += MOVE_STEP;
+			movingLeft = false;
 		}
 	}
 	else 
 	{
-		posBalloon.x += MOVE_STEP;
-		if (map->collisionMoveRight(posBalloon, sizeBalloon) != -1)
+		newPosX = posBalloon.x + MOVE_STEP;
+		colision = map->collisionCircularZones(glm::ivec2(newPosX, newPosY), sizeBalloon);
+		if (colision == 1 || colision == 2 || colision == 3)
 		{
-			if (map->collisionCircularZones(posBalloon, sizeBalloon, 2) || map->collisionCircularZones(posBalloon, sizeBalloon, 3) || map->collisionCircularZones(posBalloon, sizeBalloon, 4))
-			{
-				posBalloon.x -= MOVE_STEP;
-				movingLeft = true;
-			}
+			newPosX -= MOVE_STEP;
+			movingLeft = true;
 		}
 	}
-
+	
+	posBalloon.y = newPosY;
+	posBalloon.x = newPosX;
 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBalloon.x), float(tileMapDispl.y + posBalloon.y)));
 }

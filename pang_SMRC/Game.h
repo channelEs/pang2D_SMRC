@@ -46,11 +46,12 @@ public:
 	bool getKey(int key) const;
 
 private:
-	bool bPlay; // Continue to play game?
+	bool bPlay;					// Continue to play game?
 	bool keys[GLFW_KEY_LAST+1]; // Store key states so that 
 							    // we can have access at any time
-	Scene scene;
-	Instructions instructions;
+	std::vector<Scene*> scenes; // instances of Scene for every level in the game
+	Instructions instructions;	// instance for the instructions at the start of the game
+	int inLevel;				// num of level playing
 
 };
 
