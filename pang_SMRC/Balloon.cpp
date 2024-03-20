@@ -25,70 +25,8 @@ void Balloon::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, b
 void Balloon::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	int newPosY, newPosX;
-
-	int colision;
 	
-	if (bJumping)
-	{
-		jumpAngle += JUMP_ANGLE_STEP;
-
-		if (jumpAngle == 180)
-		{
-			bJumping = false;
-			newPosY = startY;
-			// posBalloon.y = startY;
-		}
-		else
-		{
-			newPosY = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-			colision = map->collisionCircularZones(glm::ivec2(posBalloon.x, newPosY), sizeBalloon);
-			if (colision == 0 || colision == 7 || colision == 1)
-			{ 
-				bJumping = false;
-			}
-
-			// posBalloon.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-			if (jumpAngle > 90)
-				bJumping = true;
-		}
-	}
-	else
-	{
-		newPosY = posBalloon.y + FALL_STEP;
-		colision = map->collisionCircularZones(glm::ivec2(posBalloon.x, newPosY), sizeBalloon);
-		// posBalloon.y += FALL_STEP;
-		if (colision == 5 || colision == 4 || colision == 3)
-		{
-			bJumping = true;
-			jumpAngle = 0;
-			startY = posBalloon.y;
-		}
-	}
-
-	if (movingLeft)
-	{
-		newPosX = posBalloon.x - MOVE_STEP;
-		colision = map->collisionCircularZones(glm::ivec2(newPosX, newPosY), sizeBalloon);
-		if (colision == 7 || colision == 6 || colision == 5)
-		{
-			newPosX += MOVE_STEP;
-			movingLeft = false;
-		}
-	}
-	else 
-	{
-		newPosX = posBalloon.x + MOVE_STEP;
-		colision = map->collisionCircularZones(glm::ivec2(newPosX, newPosY), sizeBalloon);
-		if (colision == 1 || colision == 2 || colision == 3)
-		{
-			newPosX -= MOVE_STEP;
-			movingLeft = true;
-		}
-	}
-	
-	posBalloon.y = newPosY;
-	posBalloon.x = newPosX;
+	setNextPos();
 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBalloon.x), float(tileMapDispl.y + posBalloon.y)));
 }
@@ -107,4 +45,199 @@ void Balloon::setPosition(const glm::vec2& pos)
 {
 	posBalloon = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBalloon.x), float(tileMapDispl.y + posBalloon.y)));
+}
+
+void Balloon::setNextPos()
+{
+	int newPosY, newPosX;
+	int newPosYit = posBalloon.y, newPosXit = posBalloon.x;
+
+	int newJumpAngle;
+	int newJumpAngleIt = jumpAngle;
+
+	int colision;
+
+	/*
+	   /|
+	  / |
+	 /  | => JUMP_ANGLE_STEP
+	/   |
+	-----
+		=> MOVE_STEP
+	*/
+	int incIt;
+	for (incIt = 1; incIt <= 2; ++incIt)
+	{
+		newPosY = newPosYit;
+		newPosX = newPosXit;
+		newJumpAngle = newJumpAngleIt;
+		if (bJumping)
+		{
+			newJumpAngleIt = newJumpAngle + JUMP_ANGLE_STEP * incIt / 2;
+
+			if (newJumpAngleIt == 180)
+			{
+				bJumping = false;
+				newPosY = startY;
+				break;
+			}
+			else
+			{
+				// Y -> JUMPING
+
+				newPosYit = int(startY - 96 * sin(3.14159f * newJumpAngleIt / 180.f));
+				if (newJumpAngleIt >= 90)
+				{
+					// Y -> JUMPING -> GOING DOWN
+
+					if (movingLeft)
+					{
+						// X -> MOVING LEFT
+
+						newPosXit = posBalloon.x - MOVE_STEP * incIt / 2;
+						colision = map->collisionCircularZones(glm::ivec2(newPosXit, newPosYit), sizeBalloon);
+						if (colision == 5)
+						{
+							newJumpAngle -= 90;
+							bJumping = true;
+							movingLeft = false;
+							break;
+						}
+						else if (colision == 6)
+						{
+							movingLeft = false;
+							break;
+						}
+					}
+					else
+					{
+						// X -> MOVING RIGHT
+
+						newPosXit = posBalloon.x + MOVE_STEP * incIt / 2;
+						colision = map->collisionCircularZones(glm::ivec2(newPosXit, newPosYit), sizeBalloon);
+						if (colision == 3)
+						{
+							newJumpAngle -= 90;
+							bJumping = true;
+							movingLeft = true;
+							break;
+						}
+						else if (colision == 2)
+						{
+							movingLeft = true;
+							break;
+						}
+					}
+					if (colision == 4) {
+						newJumpAngle -= 90;
+						bJumping = true;
+						break;
+					}
+
+				}
+				else
+				{
+					// Y -> JUMPING -> GOING UP
+
+					if (movingLeft)
+					{
+						// X -> MOVING LEFT
+
+						newPosXit = posBalloon.x - MOVE_STEP * incIt / 2;
+						colision = map->collisionCircularZones(glm::ivec2(newPosXit, newPosYit), sizeBalloon);
+						if (colision == 7)
+						{
+							newJumpAngle += 90;
+							movingLeft = false;
+							bJumping = false;
+							break;
+						}
+						else if (colision == 6)
+						{
+							movingLeft = false;
+							break;
+						}
+					}
+					else
+					{
+						// X -> MOVING RIGHT
+
+						newPosXit = posBalloon.x + MOVE_STEP * incIt / 2;
+						colision = map->collisionCircularZones(glm::ivec2(newPosXit, newPosYit), sizeBalloon);
+						if (colision == 1)
+						{
+							newJumpAngle += 90;
+							bJumping = false;
+							movingLeft = true;
+							break;
+						}
+						else if (colision == 2)
+						{
+							movingLeft = true;
+							break;
+						}
+					}
+					if (colision == 0) {
+						newJumpAngle += 90;
+						bJumping = false;
+						break;
+					}
+				}
+			}
+		}
+		else
+		{
+			// Y -> FALLING
+			newPosYit = posBalloon.y + FALL_STEP * incIt / 2;
+
+			if (movingLeft)
+			{
+				// X -> MOVING LEFT
+				newPosXit = posBalloon.x - MOVE_STEP * incIt / 2;
+				colision = map->collisionCircularZones(glm::ivec2(newPosXit, newPosYit), sizeBalloon);
+				if (colision == 5)
+				{
+					bJumping = true;
+					newJumpAngle = 0;
+					startY = newPosY;
+					movingLeft = false;
+					break;
+				}
+				else if (colision == 6)
+				{
+					movingLeft = false;
+					break;
+				}
+			}
+			else
+			{
+				// X -> MOVING RIGHT
+
+				newPosXit = posBalloon.x + MOVE_STEP * incIt / 2;
+				colision = map->collisionCircularZones(glm::ivec2(newPosXit, newPosYit), sizeBalloon);
+				if (colision == 3)
+				{
+					bJumping = true;
+					newJumpAngle = 0;
+					startY = newPosY;
+					movingLeft = true;
+					break;
+				}
+				else if (colision == 2)
+				{
+					movingLeft = true;
+					break;
+				}
+			}
+			if (colision == 4) {
+				bJumping = true;
+				newJumpAngle = 0;
+				startY = newPosY;
+				break;
+			}
+		}
+	}
+	posBalloon.y = newPosY;
+	posBalloon.x = newPosX;
+	jumpAngle = newJumpAngle;
 }

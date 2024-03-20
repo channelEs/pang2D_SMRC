@@ -15,6 +15,8 @@ public:
 	void setPosition(const glm::vec2& pos);
 
 private:
+	void setNextPos();
+
 	bool bJumping;
 	bool movingLeft;
 	glm::ivec2 tileMapDispl, posBalloon, sizeBalloon;
