@@ -48,11 +48,15 @@ void Game::keyPressed(int key)
 {
 	if(key == GLFW_KEY_ESCAPE) // Escape code
 		bPlay = false;
-	if (key == GLFW_KEY_N)
+	if (key == GLFW_KEY_1)
 	{
-		++inLevel;
-		if (inLevel == 2) inLevel = 0;
+		inLevel = 0;
 	}
+	if (key == GLFW_KEY_2)
+	{
+		inLevel = 1;
+	}
+
 	if (key == GLFW_KEY_C) {
 		scenes[inLevel]->generateBang();
 	}

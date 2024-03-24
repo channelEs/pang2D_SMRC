@@ -62,7 +62,7 @@ void Scene::init(int lvlNum)
 
 
 	map = TileMap::createTileMap(level.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-	numBalloons = level.numBalloons;
+	int numBalloons = level.numBalloons;
 	
 	// INIT PLAYER
 	player = new Player();
@@ -70,9 +70,10 @@ void Scene::init(int lvlNum)
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
 
-	// INIT SHOTS
+	// INIT STANDAR BANG
+	typeBang = 0;
 	bang = new Bang();
-	bang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	bang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
 	bang->setTileMap(map);
 	bang->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	
@@ -96,20 +97,55 @@ void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
-
-	for (int ball = 0; ball < numBalloons; ++ball) {
-		balloonsVec[ball]->update(deltaTime);
-	}
+	
 	for (int bang = 0; bang < bangs.size(); ++bang) {
 		bangs[bang]->update(deltaTime);
-		if (map->collisionMoveUp(bangs[bang]->getPos(), glm::ivec2(8, 8)) != -1) {
+		bool deleteBang = false;
+		if (bangs[bang]->getType() == 0)
+		{
+			if (map->collisionMoveUp(bangs[bang]->getPos(), bangs[bang]->getSize()) != -1)
+				deleteBang = true;
+		}
+		else if (bangs[bang]->getType() == 2)
+		{
+			if (map->collisionMoveUp(bangs[bang]->getPos(), glm::ivec2(8, 8)) != -1) {
+				deleteBang = true;
+			}
+		}
+
+		if (deleteBang)
+		{
 			delete bangs[bang];
 			for (int i = bang + 1; i < bangs.size(); ++i) {
 				bangs[i - 1] = bangs[i];
 			}
 			bangs.pop_back();
 		}
+		else
+		{
+			// colision with Bang
+			for (int ball = 0; ball < balloonsVec.size(); ++ball) {
+				if (balloonsVec[ball]->isColisionRectangle(bangs[bang]->getPos(), bangs[bang]->getSize()))
+				{
+					delete balloonsVec[ball];
+					for (int i = ball + 1; i < balloonsVec.size(); ++i) {
+						balloonsVec[i - 1] = balloonsVec[i];
+					}
+					balloonsVec.pop_back();
+				}
+			}
+		}
 	}
+
+	for (int ball = 0; ball < balloonsVec.size(); ++ball) {
+		if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)))
+		{
+			cout << "HIT HIT!\n" << endl;
+		}
+		
+		balloonsVec[ball]->update(deltaTime);
+	}
+
 }
 
 void Scene::render()
@@ -124,7 +160,7 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
 	player->render();
-	for (int ball = 0; ball < numBalloons; ++ball)
+	for (int ball = 0; ball < balloonsVec.size(); ++ball)
 		balloonsVec[ball]->render();
 	for (auto& bang : bangs) {
 		bang->render();
@@ -163,11 +199,28 @@ void Scene::initShaders()
 
 void Scene::generateBang() {
 	Bang* newBang = new Bang();
-	newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
 	newBang->setTileMap(map);
-	newBang->setPosition(player->getPosition());
+	if (typeBang == 0)
+	{
+		newBang->setPosition(glm::ivec2(player->getPosition().x + 11, 11));
+	}
+	else if (typeBang == 1)
+	{
+		newBang->setPosition(player->getPosition());
+	}
 	bangs.push_back(newBang);
 }
 
 
+/*
+POWER UPS:
 
+T - Dynamite
+Y - Doble Wire
+U - Freeze Time
+I - Power Wire
+O - Vulcan Missile
+P - Invincibility
+L - Slow Time
+*/

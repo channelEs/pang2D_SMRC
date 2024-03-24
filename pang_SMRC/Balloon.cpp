@@ -47,6 +47,21 @@ void Balloon::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBalloon.x), float(tileMapDispl.y + posBalloon.y)));
 }
 
+bool Balloon::isColisionRectangle(const glm::ivec2& pos, const glm::ivec2& rect)
+{
+	glm::ivec2 circCenter = glm::ivec2(posBalloon.x + sizeBalloon.x / 2.0f, posBalloon.y + sizeBalloon.x / 2.0f);
+
+	// Calculate the closest point on the rectangle to the circle
+	float closestX = glm::clamp(float(circCenter.x), float(pos.x), float(pos.x + rect.x));
+	float closestY = glm::clamp(float(circCenter.y), float(pos.y), float(pos.y + rect.y));
+
+	// Calculate the distance between the circle's center and the closest point on the rectangle
+	float distance = glm::length(glm::vec2(closestX - circCenter.x, closestY - circCenter.y));
+
+	// If the distance is less than or equal to the circle's radius, they intersect
+	return distance <= float(sizeBalloon.x / 2);
+}
+
 void Balloon::setNextPos()
 {
 	int newPosY, newPosX;
