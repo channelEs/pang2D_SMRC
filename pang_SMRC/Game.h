@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "Scene.h"
 #include "Instructions.h"
+#include "Text.h"
 
 
 #define SCREEN_WIDTH 48*8*4
@@ -53,6 +54,7 @@ private:
 	Instructions instructions;	// instance for the instructions at the start of the game
 	int inLevel;				// num of level playing
 
+	Text text;
 };
 
 

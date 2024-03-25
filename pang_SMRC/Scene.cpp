@@ -42,24 +42,35 @@ void Scene::init(int lvlNum)
 	initShaders();
 
 	level level;
-	// SET LEVEL
+	glm::ivec2 initPlayerPosition;
+
+	// SET INSTRUC
 	if (lvlNum == 0)
+	{
+		level.levelPath = "levels/instructions_MAP.txt";
+		level.numBalloons = 0;
+		initPlayerPosition = glm::ivec2(4, 12);
+	}
+
+	// SET LEVEL
+	if (lvlNum == 1)
 	{
 		level.levelPath = "levels/level01_MAP.txt";
 		level.numBalloons = 4;
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
+		initPlayerPosition = glm::ivec2(4, 21);
 	}
-	else if (lvlNum == 1)
+	else if (lvlNum == 2)
 	{
 		level.levelPath = "levels/level02_MAP.txt";
 		level.numBalloons = 2;
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level.numBalloons) + (SCREEN_X / level.numBalloons), 1));
 		}
+		initPlayerPosition = glm::ivec2(4, 21);
 	}
-
 
 	map = TileMap::createTileMap(level.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	int numBalloons = level.numBalloons;
@@ -67,16 +78,9 @@ void Scene::init(int lvlNum)
 	// INIT PLAYER
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setPosition(glm::vec2(initPlayerPosition.x * map->getTileSize(), initPlayerPosition.y * map->getTileSize()));
 	player->setTileMap(map);
 
-	// INIT STANDAR BANG
-	typeBang = 0;
-	bang = new Bang();
-	bang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
-	bang->setTileMap(map);
-	bang->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	
 	// INIT BALLOONS
 	for (int ball = 0; ball < numBalloons; ++ball)
 	{
@@ -89,6 +93,7 @@ void Scene::init(int lvlNum)
 		balloonsVec[ball]->setTileMap(map);
 	}
 
+	typeBang = 0;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/4), float(SCREEN_HEIGHT/4), 0.f);
 	currentTime = 0.0f;
 }
@@ -203,7 +208,7 @@ void Scene::generateBang() {
 	newBang->setTileMap(map);
 	if (typeBang == 0)
 	{
-		newBang->setPosition(glm::ivec2(player->getPosition().x + 11, 11));
+		newBang->setPosition(glm::ivec2(player->getPosition().x + 16, player->getPosition().y + 32 - 189));
 	}
 	else if (typeBang == 1)
 	{

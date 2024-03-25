@@ -14,7 +14,7 @@ void Instructions::init()
 
 	spritesheet.loadFromFile("assets/pang_startGame.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	sprite = Sprite::createSprite(glm::ivec2(384, 208), glm::vec2(0.5, 0.5), &spritesheet, &texProgram);
+	sprite = Sprite::createSprite(glm::ivec2(SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f), glm::vec2(0.5, 0.5), &spritesheet, &texProgram);
 	sprite->setNumberAnimations(4);
 
 		sprite->setAnimationSpeed(MENU01, 8);
@@ -29,7 +29,6 @@ void Instructions::init()
 		sprite->setAnimationSpeed(MENU04, 8);
 		sprite->addKeyframe(MENU04, glm::vec2(0.5f, 0.5f));
 
-	spaceActive = false;
 	sceneNum = 0;
 	sprite->changeAnimation(sceneNum);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH / 2), float(SCREEN_HEIGHT / 2), 0.f);
@@ -39,18 +38,6 @@ void Instructions::init()
 void Instructions::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-	if (Game::instance().getKey(GLFW_KEY_SPACE))
-	{
-		if (!spaceActive) {
-			++sceneNum;
-			sprite->changeAnimation(sceneNum);
-			spaceActive = true;
-		}
-	}
-	else 
-	{
-		if (spaceActive) spaceActive = false;
-	}
 }
 
 void Instructions::render()
@@ -70,6 +57,12 @@ void Instructions::render()
 bool Instructions::isActive()
 {
 	return (sceneNum >= 4);
+}
+
+void Instructions::nextScene()
+{
+	++sceneNum;
+	sprite->changeAnimation(sceneNum);
 }
 
 void Instructions::initShaders()

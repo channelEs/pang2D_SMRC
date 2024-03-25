@@ -37,16 +37,13 @@ private:
 private:
 	TileMap *map;							// tileMap active
 	Player *player;							// instance of the player
-	Bang *bang;								// shots
 	std::vector<Balloon*> balloonsVec;		// array of instances for every Balloon active
+	std::vector<Bang*> bangs;
 	
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-	std::vector<Bang*> bangs;
 	int typeBang;
-	bool bangClicked;
-
 };
 
 

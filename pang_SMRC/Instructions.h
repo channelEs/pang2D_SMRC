@@ -15,6 +15,7 @@ public:
 	void initShaders();
 
 	bool isActive();
+	void nextScene();
 
 private:
 	int sceneNum;
@@ -22,6 +23,5 @@ private:
 	Texture spritesheet;
 	Sprite* sprite;
 	glm::mat4 projection;
-	bool spaceActive;
 };
 #endif

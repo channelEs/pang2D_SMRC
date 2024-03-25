@@ -115,7 +115,11 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 		for(int i=0; i<mapSize.x; i++)
 		{
 			tile = map[j * mapSize.x + i];
-			if(tile != -1)
+			if (tile == 26) // empty txt block
+			{
+				map[j * mapSize.x + i] = 20;
+			}
+			else if(tile != -1)
 			{
 				// Non-empty tile
 				nTiles++;
@@ -123,8 +127,6 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 				// texCoordTile[0] = glm::vec2(float((tile - 1) % 32) / tilesheetSize.x, float((tile - 1) / 32) / tilesheetSize.y);
 				texCoordTile[0] = glm::vec2((tile%tilesheetSize.x)*tileTexSize.x, (tile / tilesheetSize.x) * tileTexSize.y);
 				texCoordTile[1] = texCoordTile[0] + tileTexSize;
-				//texCoordTile[0] += halfTexel;
-				//texCoordTile[1] -= halfTexel;
 				// First triangle
 				vertices.push_back(posTile.x); vertices.push_back(posTile.y);
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[0].y);
@@ -141,7 +143,6 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 				vertices.push_back(texCoordTile[0].x); vertices.push_back(texCoordTile[1].y);
 			}
 		}
-		printf("\n");
 	}
 
 	glGenVertexArrays(1, &vao);
