@@ -6,6 +6,7 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 #include "TexturedQuad.h"
+#include "Sprite.h"
 
 #define NUM_CHARACTERS (128 - 32)
 
@@ -31,12 +32,16 @@ public:
 	~Text();
 
 	bool init(const char* filename);
+	void init(const glm::ivec2& pos, ShaderProgram& shaderProgram, int size, int color, string text);
 	void destroy();
 
 	ShaderProgram& getProgram();
 	int getSize() const;
 	void render(char c, const glm::vec2& pixel, int size, const glm::vec4& color);
 	void render(const string& str, const glm::vec2& pixel, int size, const glm::vec4& color);
+	void setPosition(const glm::vec2& pos);
+	void setText(string newText);
+	void render();
 
 private:
 	void initShaders();
@@ -44,12 +49,14 @@ private:
 	void createTextureAtlas();
 
 private:
+	glm::ivec2 posText;
 	int fontSize, textureSize, maxCharWidth, maxCharHeight;
 	FT_Face face;
 	CharMetrics chars[NUM_CHARACTERS];
 	Texture textureAtlas;
 	ShaderProgram program;
 	TexturedQuad* quad;
+	Sprite* sprite;
 
 	static bool bLibInit;
 	static FT_Library library;
