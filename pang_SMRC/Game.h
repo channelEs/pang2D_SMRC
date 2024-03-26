@@ -15,6 +15,10 @@
 #define ID_BLOCKS_BRICK_H_01 24
 #define ID_BLOCKS_BRICK_H_02 25
 
+enum events {
+	PLAYER_HIT
+};
+
 
 // Game is a singleton (a class with a single instance) that represents our whole application
 
@@ -53,7 +57,7 @@ private:
 	std::vector<Scene*> scenes; // instances of Scene for every level in the game
 	Instructions instructions;	// instance for the instructions at the start of the game
 	int inLevel;				// num of level playing
-
+	int playerLives;			// num of player lives
 	Text text;
 };
 

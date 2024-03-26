@@ -31,7 +31,9 @@ bool Game::update(int deltaTime)
 	}
 	else
 	{
-		scenes[inLevel]->update(deltaTime);
+		int event = scenes[inLevel]->update(deltaTime);
+		if (event == PLAYER_HIT)
+			--playerLives;
 	}
 
 	return bPlay;

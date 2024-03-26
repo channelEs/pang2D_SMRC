@@ -32,6 +32,7 @@ Sprite::Sprite(const glm::vec2 &quadSize, const glm::vec2 &sizeInSpritesheet, Te
 	shaderProgram = program;
 	currentAnimation = -1;
 	position = glm::vec2(0.f);
+	isFreeze = false;
 }
 
 void Sprite::update(int deltaTime)
@@ -39,10 +40,24 @@ void Sprite::update(int deltaTime)
 	if(currentAnimation >= 0)
 	{
 		timeAnimation += deltaTime;
-		while(timeAnimation > animations[currentAnimation].millisecsPerKeyframe)
+		if (isFreeze)
 		{
-			timeAnimation -= animations[currentAnimation].millisecsPerKeyframe;
-			currentKeyframe = (currentKeyframe + 1) % animations[currentAnimation].keyframeDispl.size();
+			while (timeAnimation > animations[currentAnimation].millisecsPerKeyframe)
+			{
+				timeAnimation -= animations[currentAnimation].millisecsPerKeyframe;
+				if (!(currentKeyframe + 1 == animations[currentAnimation].keyframeDispl.size()))
+					currentKeyframe = (currentKeyframe + 1) % animations[currentAnimation].keyframeDispl.size();
+				else
+					currentKeyframe = animations[currentAnimation].keyframeDispl.size() - 1;
+			}
+		}
+		else
+		{
+			while(timeAnimation > animations[currentAnimation].millisecsPerKeyframe)
+			{
+				timeAnimation -= animations[currentAnimation].millisecsPerKeyframe;
+				currentKeyframe = (currentKeyframe + 1) % animations[currentAnimation].keyframeDispl.size();
+			}
 		}
 		texCoordDispl = animations[currentAnimation].keyframeDispl[currentKeyframe];
 	}
@@ -94,6 +109,11 @@ void Sprite::changeAnimation(int animId)
 		timeAnimation = 0.f;
 		texCoordDispl = animations[animId].keyframeDispl[0];
 	}
+}
+
+void Sprite::setFreeze(bool isFreezeB)
+{
+	isFreeze = isFreezeB;
 }
 
 int Sprite::animation() const

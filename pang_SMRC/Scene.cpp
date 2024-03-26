@@ -41,6 +41,8 @@ void Scene::init(int lvlNum)
 {
 	initShaders();
 
+	playerHit = false;
+
 	level level;
 	glm::ivec2 initPlayerPosition;
 
@@ -96,9 +98,10 @@ void Scene::init(int lvlNum)
 	typeBang = 0;
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/4), float(SCREEN_HEIGHT/4), 0.f);
 	currentTime = 0.0f;
+	initTime = currentTime;
 }
 
-void Scene::update(int deltaTime)
+int Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
@@ -145,12 +148,31 @@ void Scene::update(int deltaTime)
 	for (int ball = 0; ball < balloonsVec.size(); ++ball) {
 		if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)))
 		{
-			cout << "HIT HIT!\n" << endl;
+			if (!playerHit)
+			{
+				playerHit = true;
+				initTime = currentTime;
+				player->setHit(true);
+			}
+
 		}
 		
 		balloonsVec[ball]->update(deltaTime);
 	}
+	if (playerHit) 
+	{
+		cout << "CURRENT TIME: " << currentTime << " -> INIT TIME: " << initTime << endl;
+		if (currentTime - initTime > 750.f)
+		{
+			player->setHit(false);
+			if ((int)(currentTime - initTime) % 200 > 0 && (int)(currentTime - initTime) % 200 < 100 )
+				player->setInvi();
+		}
+		if (currentTime - initTime > 2000.f)
+			playerHit = false;
 
+	}
+	return -1;
 }
 
 void Scene::render()

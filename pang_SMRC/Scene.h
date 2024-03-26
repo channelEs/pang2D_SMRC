@@ -27,7 +27,7 @@ public:
 	~Scene();
 
 	void init(int lvlNum);
-	void update(int deltaTime);
+	int update(int deltaTime);
 	void render();
 	void generateBang();
 
@@ -41,9 +41,10 @@ private:
 	std::vector<Bang*> bangs;
 	
 	ShaderProgram texProgram;
-	float currentTime;
+	float currentTime, initTime;
 	glm::mat4 projection;
 	int typeBang;
+	bool playerHit;
 };
 
 
