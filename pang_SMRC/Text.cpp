@@ -14,6 +14,12 @@ using namespace std;
 bool Text::bLibInit = false;
 FT_Library Text::library;
 
+enum Letters
+{
+	NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, DASH,
+	A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
+	QUESTION_MARK, EXCLAMATION_MARK, TYPE_POINT, SPACE
+};
 
 Text::Text()
 {
@@ -64,6 +70,24 @@ bool Text::init(const char* filename)
 	quad = TexturedQuad::createTexturedQuad(geom, texCoords, program);
 
 	return true;
+}
+
+void Text::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int s, int color, string newText)
+{
+	posText = tileMapPos;
+	textureSize = newText.size();
+	fontSize = s;
+	program = shaderProgram;
+	sprite = new Sprite[fontSize];
+	switch (color)
+	{
+	case 1:
+		textureAtlas.loadFromFile("images/tipografia_red.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	default:
+		textureAtlas.loadFromFile("images/tipografia.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		break;
+	}
 }
 
 void Text::destroy()
@@ -212,4 +236,29 @@ void Text::createTextureAtlas()
 	textureAtlas.generateMipmap();
 	textureAtlas.setWrapS(GL_CLAMP_TO_EDGE);
 	textureAtlas.setWrapT(GL_CLAMP_TO_EDGE);
+}
+
+void Text::setPosition(const glm::vec2& pos)
+{
+	for (int i = 0; i < fontSize; ++i)
+		sprite[i].setPosition(glm::vec2(float(pos.x + posText.x + 8 * textureSize * i), float(posText.y)));
+}
+
+void Text::setText(string newText) {
+	for (int i = 0; i < newText.size(); ++i) {
+		int character = (int)newText.at(i);
+		if (character == 33) sprite[i].changeAnimation(EXCLAMATION_MARK);
+		else if (character == 63) sprite[i].changeAnimation(QUESTION_MARK);
+		else if (character == 45) sprite[i].changeAnimation(DASH);
+		else if (character == 46) sprite[i].changeAnimation(TYPE_POINT);
+		else if (character >= 48 && character <= 57) sprite[i].changeAnimation(character - 48);
+		else if (character >= 64 && character <= 90) sprite[i].changeAnimation(character - 54);
+		else sprite[i].changeAnimation(SPACE);
+	}
+}
+
+void Text::render()
+{
+	for (int i = 0; i < fontSize; ++i)
+		sprite[i].render();
 }
