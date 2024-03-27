@@ -43,15 +43,6 @@ Scene::~Scene()
 void Scene::init(int lvlNum)
 {
 	initShaders();
-	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
-	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
-
-	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
-	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
-	// Load textures
-	texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
-
 	playerHit = false;
 
 	level level;
@@ -63,6 +54,15 @@ void Scene::init(int lvlNum)
 		level.levelPath = "levels/instructions_MAP.txt";
 		level.numBalloons = 0;
 		initPlayerPosition = glm::ivec2(4, 12);
+
+		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
+		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+
+		texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
+		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+		// Load textures
+		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	}
 
 	// SET LEVEL
@@ -74,17 +74,14 @@ void Scene::init(int lvlNum)
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
-		/*
-		initPlayerPosition = glm::ivec2(4, 21);
 		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
 		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 
-		initShaders();
-		texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
+		texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(1.f, 1.f);
 		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 		// Load textures
-		texs[0].loadFromFile("assets/rocks.png", TEXTURE_PIXEL_FORMAT_RGBA);
-		*/
+		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 		
 	}
 	else if (lvlNum == 2)
@@ -96,6 +93,15 @@ void Scene::init(int lvlNum)
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
 		initPlayerPosition = glm::ivec2(4, 21);
+
+		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
+		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+
+		texCoords[0] = glm::vec2(0.5f, 0.5f); texCoords[1] = glm::vec2(1.f, 1.f);
+		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+		// Load textures
+		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	}
 
 	map = TileMap::createTileMap(level.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
