@@ -207,7 +207,10 @@ int Scene::update(int deltaTime)
 				player->setInvi();
 		}
 		if (currentTime - initTime > 2000.f)
+		{
 			playerHit = false;
+
+		}
 
 	}
 
@@ -239,9 +242,6 @@ void Scene::render()
 	for (auto& bang : bangs) {
 		bang->render();
 	}
-
-
-}
 	for (auto& power : powers)
 	{
 		power->render();

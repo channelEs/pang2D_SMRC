@@ -9,6 +9,7 @@
 #include "Balloon.h"
 #include "Bang.h"
 #include "PowerUps.h"
+#include "TexturedQuad.h"
 
 struct level {
 	string levelPath;

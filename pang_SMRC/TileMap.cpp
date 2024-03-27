@@ -190,7 +190,7 @@ int TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	return -1;
 }
 
-int TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY) const
+int TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, int *posY, bool modify) const
 {
 	int x0, x1, y;
 	
@@ -201,11 +201,9 @@ int TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, in
 	{
 		if(map[y*mapSize.x+x] != -1)
 		{
-			if(*posY - tileSize * y + size.y <= 4)
-			{
+			if(*posY - tileSize * y + size.y <= 4 && modify)
 				*posY = tileSize * y - size.y;
-				return map[y * mapSize.x + x];
-			}
+			return map[y * mapSize.x + x];
 		}
 	}
 	

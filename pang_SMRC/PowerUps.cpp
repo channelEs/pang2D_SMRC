@@ -40,7 +40,7 @@ void PowerUps::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 	posObj.y += 1;
-	int id_collision_down = map->collisionMoveDown(posObj, glm::ivec2(16, 16), &posObj.y);
+	int id_collision_down = map->collisionMoveDown(posObj, glm::ivec2(16, 16), &posObj.y, true);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posObj.x), float(tileMapDispl.y + posObj.y)));
 }
 

@@ -22,11 +22,12 @@ public:
 	void setPosition(const glm::vec2 &pos);
 	void setHit(bool isB);
 	void setInvi();
+	void setNormal();
 
 	glm::vec2 getPosition() const;
 	
 private:
-	bool bJumping, isHit, isInvi;
+	bool bStairs, isHit, isInvi, stairsPressed;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
 	Texture spritesheet;
