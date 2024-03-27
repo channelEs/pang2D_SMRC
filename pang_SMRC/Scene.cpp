@@ -66,6 +66,7 @@ void Scene::init(int lvlNum)
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
+		/*
 		initPlayerPosition = glm::ivec2(4, 21);
 		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
 		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
@@ -75,6 +76,8 @@ void Scene::init(int lvlNum)
 		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 		// Load textures
 		texs[0].loadFromFile("assets/rocks.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		*/
+		
 	}
 	else if (lvlNum == 2)
 	{
@@ -212,12 +215,15 @@ void Scene::render()
 	for (auto& bang : bangs) {
 		bang->render();
 	}
+	/*
 	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(384.f, 48.f, 0.f));
 	modelview = glm::translate(modelview, glm::vec3(64.f, 64.f, 0.f));
 	modelview = glm::rotate(modelview, currentTime / 1000.f, glm::vec3(0.0f, 0.0f, 1.0f));
 	modelview = glm::translate(modelview, glm::vec3(-64.f, -64.f, 0.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[0]->render(texs[0]);
+	* 
+	*/
 }
 
 void Scene::initShaders()
