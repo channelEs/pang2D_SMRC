@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include "Game.h"
 
-void PowerUps::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int powerId)
+void PowerUps::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int powerId, float currentTime)
 {
 	spritesheet.loadFromFile("assets/iconsPowerUps.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.25, 0.5), &spritesheet, &shaderProgram);
@@ -34,6 +34,7 @@ void PowerUps::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	sprite->changeAnimation(powerId);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posObj.x), float(tileMapDispl.y + posObj.y)));
+	iniTime = currentTime;
 }
 
 void PowerUps::update(int deltaTime)
@@ -58,4 +59,23 @@ void PowerUps::setPosition(const glm::vec2& pos)
 {
 	posObj = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posObj.x), float(tileMapDispl.y + posObj.y)));
+}
+
+bool PowerUps::isColisionRect(const glm::ivec2& pos, const glm::ivec2& size)
+{
+	int r1x = posObj.x, r1y = posObj.y, r1w = 16, r1h = 16;
+	int r2x = pos.x, r2y = pos.y, r2w = size.x, r2h = size.y;
+	if (r1x + r1w >= r2x && r1x <= r2x + r2w &&
+		r1y + r1h >= r2y && r1y <= r2y + r2h) return true;
+	return false;
+}
+
+int PowerUps::getPowerID()
+{
+	return sprite->animation();
+}
+
+float PowerUps::getIniTime()
+{
+	return iniTime;
 }

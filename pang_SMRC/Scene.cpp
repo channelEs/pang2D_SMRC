@@ -203,20 +203,43 @@ int Scene::update(int deltaTime)
 		if (currentTime - initTime > 750.f)
 		{
 			player->setHit(false);
-			if ((int)(currentTime - initTime) % 200 > 0 && (int)(currentTime - initTime) % 200 < 100 )
+			if ((int)(currentTime - initTime) % 200 > 0 && (int)(currentTime - initTime) % 200 < 100)
 				player->setInvi();
+			else
+			{
+				player->setNormal();
+				player->update(deltaTime);
+			}
 		}
 		if (currentTime - initTime > 2000.f)
 		{
 			playerHit = false;
-
+			player->setNormal();
 		}
 
 	}
 
-	for (auto& power : powers)
+	for (int power = 0; power < powers.size(); ++power)
 	{
-		power->update(deltaTime);
+		bool deletePower = false;
+		int powerId = powers[power]->getPowerID();
+		powers[power]->update(deltaTime);
+		if (powers[power]->isColisionRect(player->getPosition(), glm::ivec2(32, 32)))
+		{
+			deletePower = true;
+		}
+		else if ((currentTime - powers[power]->getIniTime()) > 2000.f)
+		{
+			deletePower = true;
+		}
+		if (deletePower)
+		{
+			delete powers[power];
+			for (int i = power + 1; i < powers.size(); ++i) {
+				powers[i - 1] = powers[i];
+			}
+			powers.pop_back();
+		}
 	}
 
 	return -1;
@@ -312,7 +335,7 @@ void Scene::generatePowerUp(const glm::ivec2& pos)
 		cout << "RANDOM NUMBER_02: " << r << endl;
 		powers.push_back(new PowerUps());
 		int power = powers.size() - 1;
-		powers[power]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, r);
+		powers[power]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, r, currentTime);
 		powers[power]->setPosition(pos);
 		powers[power]->setTileMap(map);
 	}

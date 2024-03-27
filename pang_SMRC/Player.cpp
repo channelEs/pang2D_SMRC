@@ -77,6 +77,7 @@ void Player::update(int deltaTime)
 	int id_collision_up = map->collisionMoveUp(posPlayer, glm::ivec2(36, 36));
 	int id_colision_right = map->collisionMoveRight(posPlayer, glm::ivec2(32, 32));
 	int id_colision_left = map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32));
+
 	if (isHit)
 	{
 		if (sprite->animation() != HIT)
