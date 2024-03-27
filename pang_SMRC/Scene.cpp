@@ -92,7 +92,7 @@ void Scene::init(int lvlNum)
 	}
 
 	typeBang = 0;
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH/4), float(SCREEN_HEIGHT/4), 0.f);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH/3), float(SCREEN_HEIGHT/3), 0.f);
 	currentTime = 0.0f;
 	initTime = currentTime;
 }
@@ -138,6 +138,7 @@ int Scene::update(int deltaTime)
 					}
 					balloonsVec.pop_back();
 					deleteBang = true;
+					break;
 				}
 			}	
 		}

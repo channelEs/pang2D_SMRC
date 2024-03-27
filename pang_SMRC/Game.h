@@ -8,8 +8,8 @@
 #include "Text.h"
 
 
-#define SCREEN_WIDTH 48*8*4
-#define SCREEN_HEIGHT 26*8*4
+#define SCREEN_WIDTH 48*8*3
+#define SCREEN_HEIGHT 34*8*3
 
 #define ID_BLOCKS_BRICK_V 20
 #define ID_BLOCKS_BRICK_H_01 24
