@@ -43,8 +43,8 @@ private:
 	std::vector<Balloon*> balloonsVec;		// array of instances for every Balloon active
 	std::vector<Bang*> bangs;
 
-	Texture texs[2];
-	TexturedQuad* texQuad[3];
+	Texture texs[1];
+	TexturedQuad* texQuad[1];
 	
 	ShaderProgram texProgram;
 	float currentTime, initTime;

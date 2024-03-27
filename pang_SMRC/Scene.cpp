@@ -43,6 +43,14 @@ Scene::~Scene()
 void Scene::init(int lvlNum)
 {
 	initShaders();
+	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
+	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+
+	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
+	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+	// Load textures
+	texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 
 	playerHit = false;
 
@@ -224,6 +232,14 @@ void Scene::render()
 	texQuad[0]->render(texs[0]);
 	* 
 	*/
+
+	texProgram.use();
+	texProgram.setUniformMatrix4f("projection", projection);
+	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+
+	modelview = glm::translate(modelview, glm::vec3(0.f, 0.f, 0.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texQuad[0]->render(texs[0]);
 }
 
 void Scene::initShaders()
