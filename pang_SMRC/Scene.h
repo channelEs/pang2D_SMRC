@@ -46,6 +46,9 @@ private:
 	std::vector<Bang*> bangs;
 	std::vector<PowerUps*> powers;
 
+	Texture texs[1];
+	TexturedQuad* texQuad[1];
+	
 	ShaderProgram texProgram;
 	float currentTime, initTime;
 	glm::mat4 projection;
