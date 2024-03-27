@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Balloon.h"
 #include "Bang.h"
+#include "TexturedQuad.h"
 
 struct level {
 	string levelPath;
@@ -41,6 +42,9 @@ private:
 	Player *player;							// instance of the player
 	std::vector<Balloon*> balloonsVec;		// array of instances for every Balloon active
 	std::vector<Bang*> bangs;
+
+	Texture texs[2];
+	TexturedQuad* texQuad[3];
 	
 	ShaderProgram texProgram;
 	float currentTime, initTime;
