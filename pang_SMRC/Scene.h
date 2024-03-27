@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Balloon.h"
 #include "Bang.h"
+#include "PowerUps.h"
 
 struct level {
 	string levelPath;
@@ -35,17 +36,20 @@ public:
 private:
 	void initShaders();
 	void generateBalloon(const glm::ivec2 &pos, int size);
+	void generatePowerUp(const glm::ivec2& pos);
+
 
 private:
 	TileMap *map;							// tileMap active
 	Player *player;							// instance of the player
 	std::vector<Balloon*> balloonsVec;		// array of instances for every Balloon active
 	std::vector<Bang*> bangs;
-	
+	std::vector<PowerUps*> powers;
+
 	ShaderProgram texProgram;
 	float currentTime, initTime;
 	glm::mat4 projection;
-	int typeBang;
+	int typeBang, powerActive;
 	bool playerHit;
 };
 

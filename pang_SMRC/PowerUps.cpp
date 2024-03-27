@@ -4,11 +4,6 @@
 #include <GL/glew.h>
 #include "Game.h"
 
-enum ObjectIcon
-{
-	DYNAMITE, DOUBLE_WIRE, FREEZE_TIME, POWER_WIRE, VULCAN_MISSILE, INVINCIBILITY, SLOW_TIME
-};
-
 void PowerUps::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int powerId)
 {
 	spritesheet.loadFromFile("assets/iconsPowerUps.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -44,6 +39,9 @@ void PowerUps::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 void PowerUps::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+	posObj.y += 1;
+	int id_collision_down = map->collisionMoveDown(posObj, glm::ivec2(16, 16), &posObj.y);
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posObj.x), float(tileMapDispl.y + posObj.y)));
 }
 
 void PowerUps::render()

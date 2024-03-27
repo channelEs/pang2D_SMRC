@@ -19,6 +19,10 @@ enum events {
 	PLAYER_HIT
 };
 
+enum powerUps
+{
+	DYNAMITE, DOUBLE_WIRE, FREEZE_TIME, POWER_WIRE, VULCAN_MISSILE, INVINCIBILITY, SLOW_TIME
+};
 
 // Game is a singleton (a class with a single instance) that represents our whole application
 

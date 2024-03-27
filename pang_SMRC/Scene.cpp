@@ -17,7 +17,8 @@ Scene::Scene()
 	map = NULL;
 	player = NULL;
 	balloonsVec = std::vector<Balloon*>();
-
+	bangs = std::vector<Bang*>();
+	powers = std::vector<PowerUps*>();
 }
 
 Scene::~Scene()
@@ -32,8 +33,12 @@ Scene::~Scene()
 	for (auto bang : bangs) {
 		delete bang;
 	}
+	for (auto power : powers) {
+		delete power;
+	}
 	balloonsVec.clear();
 	bangs.clear();
+	powers.clear();
 }
 
 
@@ -95,6 +100,7 @@ void Scene::init(int lvlNum)
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/3), float(SCREEN_HEIGHT/3), 0.f);
 	currentTime = 0.0f;
 	initTime = currentTime;
+	powerActive = -1;
 }
 
 int Scene::update(int deltaTime)
@@ -132,6 +138,8 @@ int Scene::update(int deltaTime)
 						generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
 						generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
 					}
+					generatePowerUp(balloonsVec[ball]->getPos());
+					
 					delete balloonsVec[ball];
 					for (int i = ball + 1; i < balloonsVec.size(); ++i) {
 						balloonsVec[i - 1] = balloonsVec[i];
@@ -162,9 +170,7 @@ int Scene::update(int deltaTime)
 				initTime = currentTime;
 				player->setHit(true);
 			}
-
 		}
-		
 		balloonsVec[ball]->update(deltaTime);
 	}
 	if (playerHit) 
@@ -179,6 +185,12 @@ int Scene::update(int deltaTime)
 			playerHit = false;
 
 	}
+
+	for (auto& power : powers)
+	{
+		power->update(deltaTime);
+	}
+
 	return -1;
 }
 
@@ -198,6 +210,10 @@ void Scene::render()
 		balloonsVec[ball]->render();
 	for (auto& bang : bangs) {
 		bang->render();
+	}
+	for (auto& power : powers)
+	{
+		power->render();
 	}
 }
 
@@ -253,6 +269,22 @@ void Scene::generateBalloon(const glm::ivec2 &pos, int size)
 	balloonsVec[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball % 2 == 1), glm::ivec2(size, size));
 	balloonsVec[ball]->setPosition(pos);
 	balloonsVec[ball]->setTileMap(map);
+}
+
+void Scene::generatePowerUp(const glm::ivec2& pos)
+{
+	int r = rand() % 100;
+	cout << "RANDOM NUMBER: " << r << endl;
+	if (r < 10)
+	{
+		r = rand() % 7;
+		cout << "RANDOM NUMBER_02: " << r << endl;
+		powers.push_back(new PowerUps());
+		int power = powers.size() - 1;
+		powers[power]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, r);
+		powers[power]->setPosition(pos);
+		powers[power]->setTileMap(map);
+	}
 }
 
 /*
