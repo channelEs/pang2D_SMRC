@@ -47,7 +47,7 @@ void Game::render()
 		instructions.render();
 		text.render("SPACE -> skip instructions", glm::vec2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.9), 50, glm::vec4(1, 1, 1, 1));
 	}
-	else
+	else            
 	{
 		scenes[inLevel]->render();
 		if (inLevel == 0)

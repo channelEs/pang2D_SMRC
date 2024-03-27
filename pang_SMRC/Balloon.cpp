@@ -256,3 +256,13 @@ void Balloon::setNextPos()
 	posBalloon.x = newPosX;
 	jumpAngle = newJumpAngle;
 }
+
+int Balloon::getSize()
+{
+	return sizeBalloon.x;
+}
+
+glm::ivec2 Balloon::getPos()
+{
+	return posBalloon;
+}

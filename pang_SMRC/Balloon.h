@@ -14,6 +14,9 @@ public:
 	void setTileMap(TileMap* tileMap);
 	void setPosition(const glm::vec2& pos);
 	bool isColisionRectangle(const glm::ivec2& pos, const glm::ivec2& rect);
+	
+	int getSize();
+	glm::ivec2 getPos();
 
 private:
 	void setNextPos();

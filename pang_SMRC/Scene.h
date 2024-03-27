@@ -12,6 +12,7 @@
 struct level {
 	string levelPath;
 	int numBalloons;
+	int sizeBalloon;
 	vector<glm::vec2> posBalloons;
 };
 
@@ -33,6 +34,7 @@ public:
 
 private:
 	void initShaders();
+	void generateBalloon(const glm::ivec2 &pos, int size);
 
 private:
 	TileMap *map;							// tileMap active

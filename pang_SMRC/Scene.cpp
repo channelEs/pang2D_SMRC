@@ -58,7 +58,8 @@ void Scene::init(int lvlNum)
 	if (lvlNum == 1)
 	{
 		level.levelPath = "levels/level01_MAP.txt";
-		level.numBalloons = 4;
+		level.numBalloons = 1;
+		level.sizeBalloon = 48;
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
@@ -68,8 +69,9 @@ void Scene::init(int lvlNum)
 	{
 		level.levelPath = "levels/level02_MAP.txt";
 		level.numBalloons = 2;
+		level.sizeBalloon = 24;
 		for (int i = 0; i < level.numBalloons; ++i) {
-			level.posBalloons.push_back(glm::vec2(i * (SCREEN_X / level.numBalloons) + (SCREEN_X / level.numBalloons), 1));
+			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
 		initPlayerPosition = glm::ivec2(4, 21);
 	}
@@ -86,13 +88,7 @@ void Scene::init(int lvlNum)
 	// INIT BALLOONS
 	for (int ball = 0; ball < numBalloons; ++ball)
 	{
-		glm::ivec2 size;
-		if (ball == 0) size = glm::ivec2(48, 48);
-		else size = glm::ivec2(24, 24);
-		balloonsVec.push_back(new Balloon());
-		balloonsVec[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball % 2 == 1), size);
-		balloonsVec[ball]->setPosition(glm::vec2(level.posBalloons[ball].x * map->getTileSize(), level.posBalloons[ball].y * map->getTileSize()));
-		balloonsVec[ball]->setTileMap(map);
+		generateBalloon(glm::ivec2(level.posBalloons[ball].x * map->getTileSize(), level.posBalloons[ball].y * map->getTileSize()), level.sizeBalloon);
 	}
 
 	typeBang = 0;
@@ -121,6 +117,31 @@ int Scene::update(int deltaTime)
 			}
 		}
 
+		if (!deleteBang)
+		{
+			int maxActualBalloons = balloonsVec.size();
+			// colision with Bang
+			for (int ball = 0; ball < balloonsVec.size(); ++ball) {
+				if (balloonsVec[ball]->isColisionRectangle(bangs[bang]->getPos(), bangs[bang]->getSize()))
+				{
+					int sizeNew = balloonsVec[ball]->getSize() - 16;
+					if (sizeNew == 0)
+						sizeNew = 8;
+					if (sizeNew >= 8)
+					{
+						generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
+						generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
+					}
+					delete balloonsVec[ball];
+					for (int i = ball + 1; i < balloonsVec.size(); ++i) {
+						balloonsVec[i - 1] = balloonsVec[i];
+					}
+					balloonsVec.pop_back();
+					deleteBang = true;
+				}
+			}	
+		}
+
 		if (deleteBang)
 		{
 			delete bangs[bang];
@@ -128,20 +149,6 @@ int Scene::update(int deltaTime)
 				bangs[i - 1] = bangs[i];
 			}
 			bangs.pop_back();
-		}
-		else
-		{
-			// colision with Bang
-			for (int ball = 0; ball < balloonsVec.size(); ++ball) {
-				if (balloonsVec[ball]->isColisionRectangle(bangs[bang]->getPos(), bangs[bang]->getSize()))
-				{
-					delete balloonsVec[ball];
-					for (int i = ball + 1; i < balloonsVec.size(); ++i) {
-						balloonsVec[i - 1] = balloonsVec[i];
-					}
-					balloonsVec.pop_back();
-				}
-			}
 		}
 	}
 
@@ -161,7 +168,6 @@ int Scene::update(int deltaTime)
 	}
 	if (playerHit) 
 	{
-		cout << "CURRENT TIME: " << currentTime << " -> INIT TIME: " << initTime << endl;
 		if (currentTime - initTime > 750.f)
 		{
 			player->setHit(false);
@@ -239,6 +245,14 @@ void Scene::generateBang() {
 	bangs.push_back(newBang);
 }
 
+void Scene::generateBalloon(const glm::ivec2 &pos, int size)
+{
+	balloonsVec.push_back(new Balloon());
+	int ball = balloonsVec.size() - 1;
+	balloonsVec[ball]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, (ball % 2 == 1), glm::ivec2(size, size));
+	balloonsVec[ball]->setPosition(pos);
+	balloonsVec[ball]->setTileMap(map);
+}
 
 /*
 POWER UPS:
