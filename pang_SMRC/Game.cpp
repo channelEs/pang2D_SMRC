@@ -59,6 +59,8 @@ void Game::render()
 			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 			text.render("SPACE -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
 		}
+		int power = scenes[inLevel]->getPowerActiveId();
+		text.render("POWER: " + power, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
 	}
 }
 
@@ -85,6 +87,27 @@ void Game::keyPressed(int key)
 	if (key == GLFW_KEY_C) {
 		scenes[inLevel]->generateBang();
 	}
+	if (key == GLFW_KEY_T)
+	{
+		scenes[inLevel]->setPower(DYNAMITE);
+	}
+	if (key == GLFW_KEY_Y)
+	{
+		scenes[inLevel]->setPower(DOUBLE_WIRE);
+	}
+	if (key == GLFW_KEY_U)
+	{
+		scenes[inLevel]->setPower(FREEZE_TIME);
+	}
+	if (key == GLFW_KEY_O)
+	{
+		scenes[inLevel]->setPower(VULCAN_MISSILE);
+	}
+	if (key == GLFW_KEY_P)
+	{
+		scenes[inLevel]->setPower(INVINCIBILITY);
+	}
+
 	keys[key] = true;
 }
 

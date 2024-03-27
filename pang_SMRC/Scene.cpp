@@ -126,6 +126,7 @@ void Scene::init(int lvlNum)
 	currentTime = 0.0f;
 	initTime = currentTime;
 	powerActive = -1;
+	numberBangs = 1;
 }
 
 int Scene::update(int deltaTime)
@@ -141,7 +142,7 @@ int Scene::update(int deltaTime)
 			if (map->collisionMoveUp(bangs[bang]->getPos(), bangs[bang]->getSize()) != -1)
 				deleteBang = true;
 		}
-		else if (bangs[bang]->getType() == 2)
+		else if (bangs[bang]->getType() == 1)
 		{
 			if (map->collisionMoveUp(bangs[bang]->getPos(), glm::ivec2(8, 8)) != -1) {
 				deleteBang = true;
@@ -187,16 +188,19 @@ int Scene::update(int deltaTime)
 	}
 
 	for (int ball = 0; ball < balloonsVec.size(); ++ball) {
-		if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)))
+		if (powerActive != FREEZE_TIME)
 		{
-			if (!playerHit)
+			if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)))
 			{
-				playerHit = true;
-				initTime = currentTime;
-				player->setHit(true);
+				if (!playerHit)
+				{
+					playerHit = true;
+					initTime = currentTime;
+					player->setHit(true);
+				}
 			}
+			balloonsVec[ball]->update(deltaTime);
 		}
-		balloonsVec[ball]->update(deltaTime);
 	}
 	if (playerHit) 
 	{
@@ -226,6 +230,8 @@ int Scene::update(int deltaTime)
 		powers[power]->update(deltaTime);
 		if (powers[power]->isColisionRect(player->getPosition(), glm::ivec2(32, 32)))
 		{
+			resetPowers();
+			setPower(powers[power]->getPowerID());
 			deletePower = true;
 		}
 		else if ((currentTime - powers[power]->getIniTime()) > 2000.f)
@@ -241,6 +247,9 @@ int Scene::update(int deltaTime)
 			powers.pop_back();
 		}
 	}
+
+	if (powerActive == FREEZE_TIME && (currentTime - freezeIniTime) > 5000.f)
+		resetPowers();
 
 	return -1;
 }
@@ -302,18 +311,21 @@ void Scene::initShaders()
 }
 
 void Scene::generateBang() {
-	Bang* newBang = new Bang();
-	newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
-	newBang->setTileMap(map);
-	if (typeBang == 0)
+	if (bangs.size() < numberBangs)
 	{
-		newBang->setPosition(glm::ivec2(player->getPosition().x + 16, player->getPosition().y + 32 - 189));
+		Bang* newBang = new Bang();
+		newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
+		newBang->setTileMap(map);
+		if (typeBang == 0)
+		{
+			newBang->setPosition(glm::ivec2(player->getPosition().x + 16, player->getPosition().y + 32 - 189));
+		}
+		else if (typeBang == 1)
+		{
+			newBang->setPosition(player->getPosition());
+		}
+		bangs.push_back(newBang);
 	}
-	else if (typeBang == 1)
-	{
-		newBang->setPosition(player->getPosition());
-	}
-	bangs.push_back(newBang);
 }
 
 void Scene::generateBalloon(const glm::ivec2 &pos, int size)
@@ -328,11 +340,9 @@ void Scene::generateBalloon(const glm::ivec2 &pos, int size)
 void Scene::generatePowerUp(const glm::ivec2& pos)
 {
 	int r = rand() % 100;
-	cout << "RANDOM NUMBER: " << r << endl;
-	if (r < 10)
+	if (r < 50)
 	{
 		r = rand() % 7;
-		cout << "RANDOM NUMBER_02: " << r << endl;
 		powers.push_back(new PowerUps());
 		int power = powers.size() - 1;
 		powers[power]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, r, currentTime);
@@ -341,13 +351,86 @@ void Scene::generatePowerUp(const glm::ivec2& pos)
 	}
 }
 
+void Scene::resetPowers()
+{
+	numberBangs = 1;
+	typeBang = 0;
+	powerActive = -1;
+	freezeIniTime = 0.f;
+}
+
+void Scene::setPower(int id)
+{
+	switch (id)
+	{
+	case DYNAMITE:
+	{
+
+		int ballsActive = balloonsVec.size();
+		for (int ball = 0; ball < ballsActive; ++ball) {
+			int sizeNew = balloonsVec[ball]->getSize() - 16;
+			if (sizeNew == 0)
+				sizeNew = 8;
+			if (sizeNew >= 8)
+			{
+				generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
+				generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
+			}
+
+			delete balloonsVec[ball];
+		}
+		for (int i = ballsActive; i < balloonsVec.size(); ++i) {
+			balloonsVec[i - ballsActive] = balloonsVec[i];
+		}
+		for (int i = 0; i < ballsActive; ++i)
+			balloonsVec.pop_back();
+		powerActive = DYNAMITE;
+	}
+		break;
+
+	case DOUBLE_WIRE:
+		numberBangs = 2;
+		powerActive = DOUBLE_WIRE;
+		break;
+
+	case FREEZE_TIME:
+		freezeIniTime = currentTime;
+		powerActive = FREEZE_TIME;
+		break;
+
+	case POWER_WIRE:
+		powerActive = POWER_WIRE;
+		break;
+
+	case VULCAN_MISSILE:
+		typeBang = 1;
+		break;
+
+	case INVINCIBILITY:
+		powerActive = INVINCIBILITY;
+		break;
+
+	case SLOW_TIME:
+		powerActive = SLOW_TIME;
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+int Scene::getPowerActiveId()
+{
+	return powerActive;
+}
+
 /*
 POWER UPS:
 
 T - Dynamite
 Y - Doble Wire
 U - Freeze Time
-I - Power Wire
 O - Vulcan Missile
 P - Invincibility
 L - Slow Time
