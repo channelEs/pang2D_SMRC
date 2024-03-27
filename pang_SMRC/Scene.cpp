@@ -216,6 +216,9 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+	modelview = glm::translate(modelview, glm::vec3(0.f, 0.f, 0.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texQuad[0]->render(texs[0]);
 	map->render();
 	player->render();
 	for (int ball = 0; ball < balloonsVec.size(); ++ball)
@@ -223,23 +226,8 @@ void Scene::render()
 	for (auto& bang : bangs) {
 		bang->render();
 	}
-	/*
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(384.f, 48.f, 0.f));
-	modelview = glm::translate(modelview, glm::vec3(64.f, 64.f, 0.f));
-	modelview = glm::rotate(modelview, currentTime / 1000.f, glm::vec3(0.0f, 0.0f, 1.0f));
-	modelview = glm::translate(modelview, glm::vec3(-64.f, -64.f, 0.f));
-	texProgram.setUniformMatrix4f("modelview", modelview);
-	texQuad[0]->render(texs[0]);
-	* 
-	*/
 
-	texProgram.use();
-	texProgram.setUniformMatrix4f("projection", projection);
-	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
-	modelview = glm::translate(modelview, glm::vec3(0.f, 0.f, 0.f));
-	texProgram.setUniformMatrix4f("modelview", modelview);
-	texQuad[0]->render(texs[0]);
 }
 
 void Scene::initShaders()
