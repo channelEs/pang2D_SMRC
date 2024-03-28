@@ -46,6 +46,13 @@ bool Game::update(int deltaTime)
 			scenes[inLevel]->init(inLevel);
 			inLevel = 5;
 		}
+		if (event == 6)
+		{
+			delete scenes[inLevel];
+			scenes[inLevel] = new Scene();
+			scenes[inLevel]->init(inLevel);
+			inLevel = 6;
+		}
 	}
 
 	return bPlay;
@@ -65,20 +72,31 @@ void Game::render()
 		text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.5), 50, glm::vec4(1, 1, 1, 1));
 		text.render("3 -> LEVEL_03", glm::vec2(SCREEN_WIDTH * 0.65, SCREEN_HEIGHT * 0.7), 50, glm::vec4(1, 1, 1, 1));
 	}
+	else if (inLevel == 6)
+	{
+		text.render("GAME OVER", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
+	}
 	else            
 	{
 		scenes[inLevel]->render();
 		if (inLevel == 0)
 		{
 			text.render("Welcome to PANG", glm::vec2(SCREEN_WIDTH/2, 50), 50, glm::vec4(1, 1, 1, 1));
-			text.render("1 -> LEVEL_01", glm::vec2(SCREEN_WIDTH *	0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
-			text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
-			text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
-			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
-			text.render("SPACE -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			text.render("1 -> LEVEL_01", glm::vec2(SCREEN_WIDTH *	0.25, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
+			text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			text.render("3 -> LEVEL_03", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
+			text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
+			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
+			text.render("UP -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 		}
-		int power = scenes[inLevel]->getPowerActiveId();
-		text.render("POWER: " + power, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+		else
+		{
+			int power = scenes[inLevel]->getPowerActiveId();
+			text.render("POWER: " + std::to_string(power), glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			int lives = scenes[inLevel]->getPlayerLives();
+			text.render("LIVES: " + std::to_string(lives), glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
+
+		}
 	}
 }
 

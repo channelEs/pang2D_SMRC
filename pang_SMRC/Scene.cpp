@@ -349,6 +349,10 @@ int Scene::update(int deltaTime)
 
 	if (reStart)
 		return 1;
+
+	if (balloonsVec.size() == 0 && lvlNumber == 3 && !playerHit)
+		return 6;
+
 	return -1;
 }
 
@@ -534,6 +538,11 @@ void Scene::setPower(int id)
 int Scene::getPowerActiveId()
 {
 	return powerActive;
+}
+
+int Scene::getPlayerLives()
+{
+	return player->getLives();
 }
 
 /*

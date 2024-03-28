@@ -83,6 +83,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	isHit = false;
 	stairsPressed = false;
 	isInvi = false;
+	lives = 3;
 }
 
 void Player::update(int deltaTime)
@@ -265,6 +266,10 @@ glm::vec2 Player::getPosition() const {
 	return posPlayer; 
 }
 
+int Player::getLives() {
+	return lives;
+}
+
 
 void Player::setHit(bool isB)
 {
@@ -272,6 +277,7 @@ void Player::setHit(bool isB)
 	{
 		sprite->setFreeze(false);
 		sprite->changeAnimation(STAND_LEFT);
+		if (!isInvi && lives > 0) --lives;
 	}
 	isHit = isB;
 }
