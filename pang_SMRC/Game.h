@@ -63,6 +63,7 @@ private:
 	int inLevel;				// num of level playing
 	int playerLives;			// num of player lives
 	Text text;
+	int time, points;
 };
 
 

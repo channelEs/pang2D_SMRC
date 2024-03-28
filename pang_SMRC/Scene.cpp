@@ -93,7 +93,7 @@ void Scene::init(int lvlNum)
 	{
 		level.levelPath = "levels/level02_MAP.txt";
 		level.numBalloons = 2;
-		level.sizeBalloon = 24;
+		level.sizeBalloon = 32;
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
@@ -112,7 +112,7 @@ void Scene::init(int lvlNum)
 	{
 		level.levelPath = "levels/level03_MAP.txt";
 		level.numBalloons = 2;
-		level.sizeBalloon = 24;
+		level.sizeBalloon = 32;
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
@@ -203,6 +203,29 @@ int Scene::update(int deltaTime)
 			for (int ball = 0; ball < balloonsVec.size(); ++ball) {
 				if (balloonsVec[ball]->isColisionRectangle(bangs[bang]->getPos(), bangs[bang]->getSize()))
 				{
+
+					int bubbleSize = balloonsVec[ball]->getSize();
+					bool byPlayer = bangs[bang]->getType() == 0; // Suponiendo que tipo 0 indica roto por el jugador
+
+					if (byPlayer) {
+						player->updateStreak(bubbleSize); // Actualiza la racha basada en el tamaño de la burbuja
+						int basePoints = 0;
+						// Supongamos que defines los puntos base según el tamaño de la burbuja
+						switch (bubbleSize) {
+						case 8: basePoints = 200; break;
+						case 16: basePoints = 150; break;
+						case 32: basePoints = 100; break;
+						case 48: basePoints = 50; break;
+						default: break;
+						}
+						int points = basePoints * player->calculateStreakMultiplier();
+						player->setScore(points);
+					}
+					else {
+						// Si la burbuja no es rota por el jugador, podrías querer resetear la racha
+						player->resetStreak();
+					}
+
 					int sizeNew = balloonsVec[ball]->getSize() - 16;
 					if (sizeNew == 0)
 						sizeNew = 8;
@@ -536,6 +559,15 @@ int Scene::getPowerActiveId()
 int Scene::getPlayerLives()
 {
 	return player->getLives();
+}
+
+int Scene::getCurrentTime()
+{
+	return currentTime;
+}
+
+int Scene::getPlayerScore() {
+	return player->getScore();
 }
 
 /*

@@ -84,6 +84,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	stairsPressed = false;
 	isInvi = false;
 	lives = 3;
+	score = lastBubbleSize = streakLength = 0;
 }
 
 void Player::update(int deltaTime)
@@ -268,6 +269,34 @@ glm::vec2 Player::getPosition() const {
 
 int Player::getLives() {
 	return lives;
+}
+
+int Player::getScore() {
+	return score;
+}
+
+void Player::setScore(int points) {
+	score += points;
+}
+
+void Player::resetStreak() {
+	lastBubbleSize = 0;
+	streakLength = 0;
+}
+
+void Player::updateStreak(int bubbleSize) {
+	if (bubbleSize == lastBubbleSize) {
+		++streakLength;
+	}
+	else {
+		lastBubbleSize = bubbleSize;
+		streakLength = 1;
+	}
+}
+
+int Player::calculateStreakMultiplier() {
+	if (streakLength >= 4) return 8;
+	return pow(2, streakLength - 1); // 1, 2, 4 for the 1st, 2nd, 3rd in a row
 }
 
 

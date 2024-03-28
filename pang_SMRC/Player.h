@@ -25,15 +25,20 @@ public:
 	void setNormal();
 	void setIsInvi(bool isB);
 	void setOutOfInvi();
+	void setScore(int points);
+	void resetStreak();
+	void updateStreak(int bubbleSize);
 
 	int getLives();
+	int getScore();
+	int calculateStreakMultiplier();
 
 	glm::vec2 getPosition() const;
 	
 private:
 	bool bStairs, isHit, isInvi, stairsPressed;
 	glm::ivec2 tileMapDispl, posPlayer;
-	int jumpAngle, startY, lives;
+	int jumpAngle, startY, lives, score, lastBubbleSize, streakLength;
 	Texture spritesheet, powerSheet;
 	Sprite *sprite, *powerSprite;
 	TileMap *map;

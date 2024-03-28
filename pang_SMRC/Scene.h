@@ -37,6 +37,8 @@ public:
 	void setPower(int id);
 	int getPowerActiveId();
 	int getPlayerLives();
+	int getCurrentTime();
+	int getPlayerScore();
 
 private:
 	void initShaders();
