@@ -1,0 +1,15 @@
+pang_VJ
+by Roger Canal, Sara Mendez
+
+shortcuts for Power_Ups
+
+T - Dynamite
+Y - Doble Wire
+U - Freeze Time
+I - Vulcan Missile
+O - Invincibility
+
+keys:
+
+C - fire
+ESC - exit game
