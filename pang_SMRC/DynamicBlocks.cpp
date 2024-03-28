@@ -3,19 +3,23 @@
 
 void DynamicBlocks::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int lenghtX)
 {
-	spritesheet.loadFromFile("assets/bang.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(lenghtX, 8), glm::vec2(1, 0.1), &spritesheet, &shaderProgram);
+	spritesheet.loadFromFile("assets/brikDestroyAnimation.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(lenghtX, 8), glm::vec2(1., 0.1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(2);
+	sprite->setAnimationSpeed(0, 1);
+	sprite->setAnimationSpeed(1, 3);
+	float i = 0.f;
+	if (lenghtX == 4)
+		i = 0.f;
+	else if (lenghtX == 3)
+		i = 0.5f;
 
-	sprite->setAnimationSpeed(0, 8);
-	sprite->addKeyframe(0, glm::vec2(0.f, 0.5f));
+	sprite->addKeyframe(0, glm::vec2(0.f, 0.f + i));
 
-	sprite->setAnimationSpeed(1, 16);
-	sprite->addKeyframe(1, glm::vec2(0.f, 0.6f));
-	sprite->addKeyframe(1, glm::vec2(0.f, 0.7f));
-	sprite->addKeyframe(1, glm::vec2(0.f, 0.8f));
-	sprite->addKeyframe(1, glm::vec2(0.f, 0.9f));
-
+	sprite->addKeyframe(1, glm::vec2(0.f, 0.1f + i));
+	sprite->addKeyframe(1, glm::vec2(0.f, 0.2f + i));
+	sprite->addKeyframe(1, glm::vec2(0.f, 0.3f + i));
+	sprite->addKeyframe(1, glm::vec2(0.f, 0.4f + i));
 	sprite->changeAnimation(0);
 
 	tileMapDispl = tileMapPos;
@@ -27,6 +31,11 @@ void DynamicBlocks::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProg
 void DynamicBlocks::render()
 {
 	sprite->render();
+}
+
+void DynamicBlocks::update(int deltaTime)
+{
+	sprite->update(deltaTime);
 }
 
 void DynamicBlocks::setTileMap(TileMap* tileMap)

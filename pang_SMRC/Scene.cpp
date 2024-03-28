@@ -328,6 +328,7 @@ int Scene::update(int deltaTime)
 
 	for (int block = 0; block < blocks.size(); ++block)
 	{
+		blocks[block]->update(deltaTime);
 		if (blocks[block]->isDestroyActive() && (currentTime - blocks[block]->getDestroyTime()) > 1000.f)
 		{
 			glm::ivec2 posBl = blocks[block]->getPosition();
@@ -368,14 +369,10 @@ void Scene::render()
 	player->render();
 	for (int ball = 0; ball < balloonsVec.size(); ++ball)
 		balloonsVec[ball]->render();
-	for (auto& bang : bangs) {
+	for (auto& bang : bangs)
 		bang->render();
-	}
 	for (auto& power : powers)
-	{
 		power->render();
-	}
-
 	for (auto& block : blocks)
 		block->render();
 }

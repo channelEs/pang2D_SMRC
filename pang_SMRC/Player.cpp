@@ -20,16 +20,17 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	bStairs = false;
 
-	powerSheet.loadFromFile("assets/bang.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	powerSprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.1, 0.1), &powerSheet, &shaderProgram);
+	powerSheet.loadFromFile("assets/inviniPlayer.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	powerSprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 0.5), &powerSheet, &shaderProgram);
 	powerSprite->setNumberAnimations(2);
-	powerSprite->setAnimationSpeed(0, 8);
-	powerSprite->addKeyframe(0, glm::vec2(0.f, 0.5f));
+	powerSprite->setAnimationSpeed(0, 16);
+	powerSprite->addKeyframe(0, glm::vec2(0.f, 0.f));
+	powerSprite->addKeyframe(0, glm::vec2(0.5f, 0.f));
 
 	powerSprite->setAnimationSpeed(1, 20);
-	powerSprite->addKeyframe(1, glm::vec2(0.f, 0.3f));
+	powerSprite->addKeyframe(1, glm::vec2(0.f, 0.f));
 	powerSprite->addKeyframe(1, glm::vec2(0.5f, 0.5f)); //	empty
-	powerSprite->addKeyframe(1, glm::vec2(0.7f, 0.7f));
+	powerSprite->addKeyframe(1, glm::vec2(0.5f, 0.f));
 	
 	powerSprite->changeAnimation(0);
 
