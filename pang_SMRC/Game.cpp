@@ -92,9 +92,9 @@ void Game::render()
 		else
 		{
 			int power = scenes[inLevel]->getPowerActiveId();
-			text.render("POWER: " + power, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			text.render("POWER: " + std::to_string(power), glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
 			int lives = scenes[inLevel]->getPlayerLives();
-			text.render("LIVES: " + lives, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
+			text.render("LIVES: " + std::to_string(lives), glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
 
 		}
 	}
