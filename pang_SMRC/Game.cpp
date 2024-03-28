@@ -89,8 +89,14 @@ void Game::render()
 			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
 			text.render("UP -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 		}
-		int power = scenes[inLevel]->getPowerActiveId();
-		text.render("POWER: " + power, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+		else
+		{
+			int power = scenes[inLevel]->getPowerActiveId();
+			text.render("POWER: " + power, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			int lives = scenes[inLevel]->getPlayerLives();
+			text.render("LIVES: " + lives, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
+
+		}
 	}
 }
 

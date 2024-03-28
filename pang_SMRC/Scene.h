@@ -36,6 +36,7 @@ public:
 	void generateBang();
 	void setPower(int id);
 	int getPowerActiveId();
+	int getPlayerLives();
 
 private:
 	void initShaders();

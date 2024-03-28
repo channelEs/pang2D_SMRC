@@ -543,6 +543,11 @@ int Scene::getPowerActiveId()
 	return powerActive;
 }
 
+int Scene::getPlayerLives()
+{
+	return player->getLives();
+}
+
 /*
 POWER UPS:
 

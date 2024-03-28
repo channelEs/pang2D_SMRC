@@ -82,6 +82,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	isHit = false;
 	stairsPressed = false;
 	isInvi = false;
+	lives = 3;
 }
 
 void Player::update(int deltaTime)
@@ -98,6 +99,7 @@ void Player::update(int deltaTime)
 		if (sprite->animation() != HIT)
 			sprite->changeAnimation(HIT);
 		sprite->setFreeze(true);
+		--lives;
 		if (id_collision_down == -1 || (id_collision_down <= 3 && id_collision_down >= 0))
 			posPlayer.y += FALL_STEP;
 	}
@@ -262,6 +264,10 @@ void Player::setPosition(const glm::vec2 &pos)
 
 glm::vec2 Player::getPosition() const {
 	return posPlayer; 
+}
+
+int Player::getLives() {
+	return lives;
 }
 
 
