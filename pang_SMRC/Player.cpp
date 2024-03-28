@@ -99,7 +99,6 @@ void Player::update(int deltaTime)
 		if (sprite->animation() != HIT)
 			sprite->changeAnimation(HIT);
 		sprite->setFreeze(true);
-		--lives;
 		if (id_collision_down == -1 || (id_collision_down <= 3 && id_collision_down >= 0))
 			posPlayer.y += FALL_STEP;
 	}
@@ -277,6 +276,7 @@ void Player::setHit(bool isB)
 	{
 		sprite->setFreeze(false);
 		sprite->changeAnimation(STAND_LEFT);
+		if (!isInvi && lives > 0) --lives;
 	}
 	isHit = isB;
 }
