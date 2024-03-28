@@ -46,6 +46,13 @@ bool Game::update(int deltaTime)
 			scenes[inLevel]->init(inLevel);
 			inLevel = 5;
 		}
+		if (event == 6)
+		{
+			delete scenes[inLevel];
+			scenes[inLevel] = new Scene();
+			scenes[inLevel]->init(inLevel);
+			inLevel = 6;
+		}
 	}
 
 	return bPlay;
@@ -64,6 +71,10 @@ void Game::render()
 		text.render("1 -> LEVEL_01", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
 		text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.5), 50, glm::vec4(1, 1, 1, 1));
 		text.render("3 -> LEVEL_03", glm::vec2(SCREEN_WIDTH * 0.65, SCREEN_HEIGHT * 0.7), 50, glm::vec4(1, 1, 1, 1));
+	}
+	else if (inLevel == 6)
+	{
+		text.render("GAME OVER", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
 	}
 	else            
 	{
