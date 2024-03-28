@@ -66,7 +66,7 @@ void Scene::init(int lvlNum)
 		texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
 		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 		// Load textures
-		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		texs[0].loadFromFile("./assets/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	}
 
@@ -82,10 +82,10 @@ void Scene::init(int lvlNum)
 		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
 		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 
-		texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(1.f, 1.f);
+		texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(0.5f, 0.5f);
 		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 		// Load textures
-		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		texs[0].loadFromFile("./assets/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 		initPlayerPosition = glm::ivec2(4, 21);
 	}
@@ -100,12 +100,12 @@ void Scene::init(int lvlNum)
 		initPlayerPosition = glm::ivec2(4, 21);
 
 		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
-		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+		glm::vec2 texCoords[2] = { glm::vec2(1.f, 1.f), glm::vec2(1.5f, 1.5f) };
 
 		texCoords[0] = glm::vec2(0.5f, 0.5f); texCoords[1] = glm::vec2(1.f, 1.f);
 		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 		// Load textures
-		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		texs[0].loadFromFile("./assets/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	}
 	else if (lvlNum == 3)
@@ -124,7 +124,7 @@ void Scene::init(int lvlNum)
 		texCoords[0] = glm::vec2(0.5f, 0.5f); texCoords[1] = glm::vec2(1.f, 1.f);
 		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
 		// Load textures
-		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		texs[0].loadFromFile("./assets/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	}
 
