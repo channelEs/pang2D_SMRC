@@ -414,7 +414,6 @@ void Scene::initShaders()
 void Scene::generateBang() {
 	if (bangs.size() < numberBangs)
 	{
-		cout << "bangs size: " << bangs.size() << endl;
 		Bang* newBang = new Bang();
 		newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
 		if (typeBang == 0)
