@@ -19,6 +19,14 @@ enum PlayerAnims
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
 	bStairs = false;
+
+	powerSheet.loadFromFile("assets/bang.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	powerSprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.1, 0.25), &powerSheet, &shaderProgram);
+	powerSprite->setNumberAnimations(1);
+	powerSprite->setAnimationSpeed(0, 8);
+	powerSprite->addKeyframe(0, glm::vec2(0.f, 0.5f));
+	powerSprite->changeAnimation(0);
+
 	spritesheet.loadFromFile("assets/pang_BlueAssets.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.1, 0.25), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(8);
@@ -64,9 +72,10 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-	
+
 	isHit = false;
 	stairsPressed = false;
+	isInvi = false;
 }
 
 void Player::update(int deltaTime)
@@ -143,8 +152,6 @@ void Player::update(int deltaTime)
 		}
 		else
 		{
-			cout << "UP: " << id_collision_up << "DWN: " << id_collision_down << "LFT: " << id_colision_left << "RGT: " << id_colision_right << endl;
-
 			if (Game::instance().getKey(GLFW_KEY_UP))
 			{
 				bool enter = false;
@@ -206,7 +213,6 @@ void Player::update(int deltaTime)
 						posPlayer.y += 1;
 						id_collision_down = map->collisionMoveDown(posPlayer, glm::ivec2(36, 36), &posPlayer.y, false);
 					}
-					//--posPlayer.y;
 					sprite->changeAnimation(STAND_LEFT);
 				}
 				else
@@ -221,11 +227,19 @@ void Player::update(int deltaTime)
 		}
 	}
 	
+	if (isInvi)
+	{
+		powerSprite->update(deltaTime);
+		powerSprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	}
+
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
 void Player::render()
 {
+	if (isInvi)
+		powerSprite->render();
 	sprite->render();
 }
 
@@ -263,4 +277,9 @@ void Player::setInvi()
 void Player::setNormal()
 {
 	sprite->changeAnimation(STAND_LEFT);
+}
+
+void Player::setIsInvi(bool isB)
+{
+	isInvi = isB;
 }

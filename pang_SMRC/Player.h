@@ -23,6 +23,7 @@ public:
 	void setHit(bool isB);
 	void setInvi();
 	void setNormal();
+	void setIsInvi(bool isB);
 
 	glm::vec2 getPosition() const;
 	
@@ -30,8 +31,8 @@ private:
 	bool bStairs, isHit, isInvi, stairsPressed;
 	glm::ivec2 tileMapDispl, posPlayer;
 	int jumpAngle, startY;
-	Texture spritesheet;
-	Sprite *sprite;
+	Texture spritesheet, powerSheet;
+	Sprite *sprite, *powerSprite;
 	TileMap *map;
 
 };

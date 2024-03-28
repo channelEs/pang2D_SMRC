@@ -19,6 +19,7 @@ Scene::Scene()
 	balloonsVec = std::vector<Balloon*>();
 	bangs = std::vector<Bang*>();
 	powers = std::vector<PowerUps*>();
+	blocks = std::vector<DynamicBlocks*>();
 }
 
 Scene::~Scene()
@@ -36,6 +37,8 @@ Scene::~Scene()
 	for (auto power : powers) {
 		delete power;
 	}
+	for (auto block : blocks)
+		delete block;
 	balloonsVec.clear();
 	bangs.clear();
 	powers.clear();
@@ -121,12 +124,18 @@ void Scene::init(int lvlNum)
 		generateBalloon(glm::ivec2(level.posBalloons[ball].x * map->getTileSize(), level.posBalloons[ball].y * map->getTileSize()), level.sizeBalloon);
 	}
 
-	typeBang = 0;
+	if (lvlNum == 2)
+	{
+		generateBlock(glm::ivec2(13 * map->getTileSize(), 17 * map->getTileSize()));
+		generateBlock(glm::ivec2(31 * map->getTileSize(), 17 * map->getTileSize()));
+	}
+
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/3), float(SCREEN_HEIGHT/3), 0.f);
 	currentTime = 0.0f;
-	initTime = currentTime;
+	playerHitTime = currentTime;
 	powerActive = -1;
-	numberBangs = 1;
+	freezedTime = false;
+	resetPowers();
 }
 
 int Scene::update(int deltaTime)
@@ -161,8 +170,11 @@ int Scene::update(int deltaTime)
 						sizeNew = 8;
 					if (sizeNew >= 8)
 					{
-						generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
-						generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
+						glm::ivec2 ballPos = balloonsVec[ball]->getPos();
+						ballPos.x -= 1;
+						generateBalloon(ballPos, sizeNew);
+						ballPos.x += 2;
+						generateBalloon(ballPos, sizeNew);
 					}
 					generatePowerUp(balloonsVec[ball]->getPos());
 					
@@ -177,6 +189,27 @@ int Scene::update(int deltaTime)
 			}	
 		}
 
+		if (!deleteBang)
+		{
+			for (int block = 0; block < blocks.size(); ++block)
+			{
+				if (blocks[block]->isColisionRect(bangs[bang]->getPos(), bangs[bang]->getSize()))
+				{
+					glm::ivec2 posBl = blocks[block]->getPosition();
+					map->setTile(posBl.x / map->getTileSize(), posBl.y / map->getTileSize(), -1);
+					map->setTile(posBl.x / map->getTileSize() + 1, posBl.y / map->getTileSize(), -1);
+					map->setTile(posBl.x / map->getTileSize() + 2, posBl.y / map->getTileSize(), -1);
+
+					deleteBang = true;
+					delete blocks[block];
+					for (int i = block + 1; i < blocks.size(); ++i) {
+						blocks[i - 1] = blocks[i];
+					}
+					blocks.pop_back();
+				}
+			}
+		}
+
 		if (deleteBang)
 		{
 			delete bangs[bang];
@@ -188,26 +221,30 @@ int Scene::update(int deltaTime)
 	}
 
 	for (int ball = 0; ball < balloonsVec.size(); ++ball) {
-		if (powerActive != FREEZE_TIME)
+		if (!freezedTime)
 		{
 			if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)))
 			{
-				if (!playerHit)
+				if (!playerHit && !playerInvinci)
 				{
 					playerHit = true;
-					initTime = currentTime;
+					playerHitTime = currentTime;
 					player->setHit(true);
 				}
+				if (playerInvinci)
+					playerInvinci = false;
 			}
 			balloonsVec[ball]->update(deltaTime);
 		}
 	}
+	bool reStart = false;
 	if (playerHit) 
 	{
-		if (currentTime - initTime > 750.f)
+		if (currentTime - playerHitTime > 750.f)
 		{
 			player->setHit(false);
-			if ((int)(currentTime - initTime) % 200 > 0 && (int)(currentTime - initTime) % 200 < 100)
+			reStart = true;
+			if ((int)(currentTime - playerHitTime) % 200 > 0 && (int)(currentTime - playerHitTime) % 200 < 100)
 				player->setInvi();
 			else
 			{
@@ -215,7 +252,7 @@ int Scene::update(int deltaTime)
 				player->update(deltaTime);
 			}
 		}
-		if (currentTime - initTime > 2000.f)
+		if (currentTime - playerHitTime > 2000.f)
 		{
 			playerHit = false;
 			player->setNormal();
@@ -230,7 +267,6 @@ int Scene::update(int deltaTime)
 		powers[power]->update(deltaTime);
 		if (powers[power]->isColisionRect(player->getPosition(), glm::ivec2(32, 32)))
 		{
-			resetPowers();
 			setPower(powers[power]->getPowerID());
 			deletePower = true;
 		}
@@ -248,9 +284,19 @@ int Scene::update(int deltaTime)
 		}
 	}
 
-	if (powerActive == FREEZE_TIME && (currentTime - freezeIniTime) > 5000.f)
-		resetPowers();
+	if (freezedTime && (currentTime - freezeIniTime) > 5000.f)
+	{
+		freezedTime = false;
+	}
 
+	if (playerInvinci && (currentTime - invinciTime) > 5000.f)
+	{
+		player->setIsInvi(false);
+		playerInvinci = false;
+	}
+
+	if (reStart)
+		return 1;
 	return -1;
 }
 
@@ -278,6 +324,9 @@ void Scene::render()
 	{
 		power->render();
 	}
+
+	for (auto& block : blocks)
+		block->render();
 }
 
 void Scene::initShaders()
@@ -328,6 +377,15 @@ void Scene::generateBang() {
 	}
 }
 
+void Scene::generateBlock(const glm::ivec2& pos)
+{
+	blocks.push_back(new DynamicBlocks());
+	int block = blocks.size() - 1;
+	blocks[block]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	blocks[block]->setPosition(pos);
+	blocks[block]->setTileMap(map);
+}
+
 void Scene::generateBalloon(const glm::ivec2 &pos, int size)
 {
 	balloonsVec.push_back(new Balloon());
@@ -356,7 +414,6 @@ void Scene::resetPowers()
 	numberBangs = 1;
 	typeBang = 0;
 	powerActive = -1;
-	freezeIniTime = 0.f;
 }
 
 void Scene::setPower(int id)
@@ -395,6 +452,7 @@ void Scene::setPower(int id)
 
 	case FREEZE_TIME:
 		freezeIniTime = currentTime;
+		freezedTime = true;
 		powerActive = FREEZE_TIME;
 		break;
 
@@ -403,11 +461,15 @@ void Scene::setPower(int id)
 		break;
 
 	case VULCAN_MISSILE:
+		resetPowers();
 		typeBang = 1;
 		break;
 
 	case INVINCIBILITY:
+		playerInvinci = true;
+		invinciTime = currentTime;
 		powerActive = INVINCIBILITY;
+		player->setIsInvi(true);
 		break;
 
 	case SLOW_TIME:

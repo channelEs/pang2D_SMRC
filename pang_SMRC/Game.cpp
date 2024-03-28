@@ -32,8 +32,13 @@ bool Game::update(int deltaTime)
 	else
 	{
 		int event = scenes[inLevel]->update(deltaTime);
-		if (event == PLAYER_HIT)
+		if (event == 1)
+		{
+			delete scenes[inLevel];
+			scenes[inLevel] = new Scene();
+			scenes[inLevel]->init(inLevel);
 			--playerLives;
+		}
 	}
 
 	return bPlay;
@@ -99,11 +104,11 @@ void Game::keyPressed(int key)
 	{
 		scenes[inLevel]->setPower(FREEZE_TIME);
 	}
-	if (key == GLFW_KEY_O)
+	if (key == GLFW_KEY_I)
 	{
 		scenes[inLevel]->setPower(VULCAN_MISSILE);
 	}
-	if (key == GLFW_KEY_P)
+	if (key == GLFW_KEY_O)
 	{
 		scenes[inLevel]->setPower(INVINCIBILITY);
 	}

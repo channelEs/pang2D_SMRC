@@ -27,6 +27,8 @@ public:
 
 	void render() const;
 	void free();
+
+	void setTile(int x, int y, int id);
 	
 	int getTileSize() const { return tileSize; }
 

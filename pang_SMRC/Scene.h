@@ -10,6 +10,7 @@
 #include "Bang.h"
 #include "PowerUps.h"
 #include "TexturedQuad.h"
+#include "DynamicBlocks.h"
 
 struct level {
 	string levelPath;
@@ -38,6 +39,7 @@ public:
 
 private:
 	void initShaders();
+	void generateBlock(const glm::ivec2& pos);
 	void generateBalloon(const glm::ivec2 &pos, int size);
 	void generatePowerUp(const glm::ivec2& pos);
 	void resetPowers();
@@ -49,15 +51,16 @@ private:
 	std::vector<Balloon*> balloonsVec;		// array of instances for every Balloon active
 	std::vector<Bang*> bangs;
 	std::vector<PowerUps*> powers;
+	std::vector<DynamicBlocks*> blocks;
 
 	Texture texs[1];
 	TexturedQuad* texQuad[1];
 	
 	ShaderProgram texProgram;
-	float currentTime, initTime, freezeIniTime;
+	float currentTime, playerHitTime, freezeIniTime, invinciTime;
 	glm::mat4 projection;
 	int typeBang, powerActive, numberBangs;
-	bool playerHit;
+	bool playerHit, playerInvinci, freezedTime;
 };
 
 

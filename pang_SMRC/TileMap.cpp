@@ -279,7 +279,10 @@ int TileMap::collisionCircularZones(const glm::ivec2& pos, const glm::ivec2& siz
 	return -1;
 }
 
-
+void TileMap::setTile(int x, int y, int id)
+{
+	map[y * mapSize.x + x] = id;
+}
 
 
 
