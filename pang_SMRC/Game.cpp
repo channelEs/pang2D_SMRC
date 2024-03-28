@@ -80,7 +80,7 @@ void Game::render()
 	}
 	else if (inLevel == 6)
 	{
-		text.render("GAME OVER", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
+		text.render("GAME OVER", glm::vec2(SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
 	}
 	else            
 	{
@@ -93,7 +93,6 @@ void Game::render()
 			text.render("3 -> LEVEL_03", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
 			text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
 			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
-			text.render("UP -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 		}
 		else
 		{
