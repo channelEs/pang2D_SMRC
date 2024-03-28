@@ -24,6 +24,7 @@ public:
 	void setInvi();
 	void setNormal();
 	void setIsInvi(bool isB);
+	void setOutOfInvi();
 
 	glm::vec2 getPosition() const;
 	

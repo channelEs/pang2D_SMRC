@@ -31,7 +31,7 @@ void Bang::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int 
 	if (type == 0)
 	{
 		sprite->setNumberAnimations(1);
-		sprite->setAnimationSpeed(0, 89);
+		sprite->setAnimationSpeed(0, 62);
 		
 		for (int i = 0; i < 79; ++i)
 		{
@@ -49,7 +49,7 @@ void Bang::update(int deltaTime)
     sprite->update(deltaTime);
 	if (type == 0)
 	{
-		sizeBang.y += 2* 156.f / 79.f; // 190 steps / 60 framesXsec
+		sizeBang.y += 1.5 * 156.f / 79.f; // 190 steps / 60 framesXsec
 		posBangDync.y = posBangStatic.y + (189 - sizeBang.y);
 	}
 	else if (type == 1)

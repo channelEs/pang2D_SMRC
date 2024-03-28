@@ -10,7 +10,7 @@ void Game::init()
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 
 	instructions.init();
-	int numLevels = 3;
+	int numLevels = 4;
 	for (int i = 0; i < numLevels; ++i) {
 		scenes.push_back(new Scene());
 		scenes[i]->init(i);
@@ -29,7 +29,7 @@ bool Game::update(int deltaTime)
 	{
 		instructions.update(deltaTime);
 	}
-	else
+	else if (inLevel < scenes.size())
 	{
 		int event = scenes[inLevel]->update(deltaTime);
 		if (event == 1)
@@ -38,6 +38,13 @@ bool Game::update(int deltaTime)
 			scenes[inLevel] = new Scene();
 			scenes[inLevel]->init(inLevel);
 			--playerLives;
+		}
+		if (event == 2)
+		{
+			delete scenes[inLevel];
+			scenes[inLevel] = new Scene();
+			scenes[inLevel]->init(inLevel);
+			inLevel = 5;
 		}
 	}
 
@@ -51,6 +58,12 @@ void Game::render()
 	{
 		instructions.render();
 		text.render("SPACE -> skip instructions", glm::vec2(SCREEN_WIDTH * 0.5, SCREEN_HEIGHT * 0.9), 50, glm::vec4(1, 1, 1, 1));
+	}
+	else if (inLevel == 5)
+	{
+		text.render("1 -> LEVEL_01", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
+		text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.5), 50, glm::vec4(1, 1, 1, 1));
+		text.render("3 -> LEVEL_03", glm::vec2(SCREEN_WIDTH * 0.65, SCREEN_HEIGHT * 0.7), 50, glm::vec4(1, 1, 1, 1));
 	}
 	else            
 	{
@@ -84,6 +97,10 @@ void Game::keyPressed(int key)
 	if (key == GLFW_KEY_2)
 	{
 		inLevel = 2;
+	}
+	if (key == GLFW_KEY_3)
+	{
+		inLevel = 3;
 	}
 	if (key == GLFW_KEY_SPACE && !instructions.isActive())
 	{

@@ -39,7 +39,7 @@ public:
 
 private:
 	void initShaders();
-	void generateBlock(const glm::ivec2& pos);
+	void generateBlock(const glm::ivec2& pos, int lenght);
 	void generateBalloon(const glm::ivec2 &pos, int size);
 	void generatePowerUp(const glm::ivec2& pos);
 	void resetPowers();
@@ -59,8 +59,8 @@ private:
 	ShaderProgram texProgram;
 	float currentTime, playerHitTime, freezeIniTime, invinciTime;
 	glm::mat4 projection;
-	int typeBang, powerActive, numberBangs;
-	bool playerHit, playerInvinci, freezedTime;
+	int typeBang, powerActive, numberBangs, lvlNumber;
+	bool playerHit, playerInvinci, freezedTime, playerOutOfInvinci;
 };
 
 

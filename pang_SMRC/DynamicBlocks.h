@@ -9,7 +9,7 @@ class DynamicBlocks
 {
 
 public:
-	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
+	void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, int lenghtX);
 	void update(int deltaTime);
 	void render();
 
@@ -17,6 +17,10 @@ public:
 	void setPosition(const glm::vec2& pos);
 
 	bool isColisionRect(const glm::ivec2& pos, const glm::ivec2& size);
+	float getDestroyTime();
+	bool isDestroyActive();
+	int getSize();
+	void setIsDestroy(bool isB, float currentT);
 
 	glm::ivec2 getPosition();
 
@@ -26,6 +30,9 @@ private:
 	Texture spritesheet;
 	Sprite* sprite;
 	TileMap* map;
+	int lenght;
+	bool isDestroy;
+	float iniTimeDestroy;
 
 };
 

@@ -108,6 +108,25 @@ void Scene::init(int lvlNum)
 		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	}
+	else if (lvlNum == 3)
+	{
+		level.levelPath = "levels/level03_MAP.txt";
+		level.numBalloons = 2;
+		level.sizeBalloon = 24;
+		for (int i = 0; i < level.numBalloons; ++i) {
+			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
+		}
+		initPlayerPosition = glm::ivec2(4, 21);
+
+		glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
+		glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+
+		texCoords[0] = glm::vec2(0.5f, 0.5f); texCoords[1] = glm::vec2(1.f, 1.f);
+		texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);
+		// Load textures
+		texs[0].loadFromFile("./assets/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+	}
 
 	map = TileMap::createTileMap(level.levelPath, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	int numBalloons = level.numBalloons;
@@ -126,15 +145,24 @@ void Scene::init(int lvlNum)
 
 	if (lvlNum == 2)
 	{
-		generateBlock(glm::ivec2(13 * map->getTileSize(), 17 * map->getTileSize()));
-		generateBlock(glm::ivec2(31 * map->getTileSize(), 17 * map->getTileSize()));
+		generateBlock(glm::ivec2(17 * map->getTileSize(), 8 * map->getTileSize()), 32);
+		generateBlock(glm::ivec2(21 * map->getTileSize(), 8 * map->getTileSize()), 32);
+		generateBlock(glm::ivec2(25 * map->getTileSize(), 8 * map->getTileSize()), 32);
+		generateBlock(glm::ivec2(29 * map->getTileSize(), 8 * map->getTileSize()), 32);
+	}
+	else if (lvlNum == 3)
+	{
+		generateBlock(glm::ivec2(13 * map->getTileSize(), 17 * map->getTileSize()), 24);
+		generateBlock(glm::ivec2(31 * map->getTileSize(), 17 * map->getTileSize()), 24);
 	}
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH/3), float(SCREEN_HEIGHT/3), 0.f);
+	lvlNumber = lvlNum;
 	currentTime = 0.0f;
 	playerHitTime = currentTime;
 	powerActive = -1;
 	freezedTime = false;
+	playerOutOfInvinci = false;
 	resetPowers();
 }
 
@@ -146,6 +174,16 @@ int Scene::update(int deltaTime)
 	for (int bang = 0; bang < bangs.size(); ++bang) {
 		bangs[bang]->update(deltaTime);
 		bool deleteBang = false;
+
+		for (int block = 0; block < blocks.size(); ++block)
+		{
+			if (blocks[block]->isColisionRect(bangs[bang]->getPos(), bangs[bang]->getSize()) && !blocks[block]->isDestroyActive())
+			{
+				blocks[block]->setIsDestroy(true, currentTime);
+				deleteBang = true;
+			}
+		}
+
 		if (bangs[bang]->getType() == 0)
 		{
 			if (map->collisionMoveUp(bangs[bang]->getPos(), bangs[bang]->getSize()) != -1)
@@ -189,27 +227,6 @@ int Scene::update(int deltaTime)
 			}	
 		}
 
-		if (!deleteBang)
-		{
-			for (int block = 0; block < blocks.size(); ++block)
-			{
-				if (blocks[block]->isColisionRect(bangs[bang]->getPos(), bangs[bang]->getSize()))
-				{
-					glm::ivec2 posBl = blocks[block]->getPosition();
-					map->setTile(posBl.x / map->getTileSize(), posBl.y / map->getTileSize(), -1);
-					map->setTile(posBl.x / map->getTileSize() + 1, posBl.y / map->getTileSize(), -1);
-					map->setTile(posBl.x / map->getTileSize() + 2, posBl.y / map->getTileSize(), -1);
-
-					deleteBang = true;
-					delete blocks[block];
-					for (int i = block + 1; i < blocks.size(); ++i) {
-						blocks[i - 1] = blocks[i];
-					}
-					blocks.pop_back();
-				}
-			}
-		}
-
 		if (deleteBang)
 		{
 			delete bangs[bang];
@@ -227,18 +244,21 @@ int Scene::update(int deltaTime)
 			{
 				if (!playerHit && !playerInvinci)
 				{
-					playerHit = true;
 					playerHitTime = currentTime;
 					player->setHit(true);
+					playerHit = true;
 				}
-				if (playerInvinci)
-					playerInvinci = false;
+				else if (!playerHit && playerInvinci)
+				{
+					playerHit = true;
+					playerOutOfInvinci = true;
+				}
 			}
 			balloonsVec[ball]->update(deltaTime);
 		}
 	}
 	bool reStart = false;
-	if (playerHit) 
+	if (playerHit && !playerOutOfInvinci) 
 	{
 		if (currentTime - playerHitTime > 750.f)
 		{
@@ -289,11 +309,42 @@ int Scene::update(int deltaTime)
 		freezedTime = false;
 	}
 
-	if (playerInvinci && (currentTime - invinciTime) > 5000.f)
+	if (playerInvinci)
 	{
-		player->setIsInvi(false);
-		playerInvinci = false;
+		if ((currentTime - invinciTime) > 5000.f || playerHit)
+		{
+			playerHit = false;
+			player->setIsInvi(false);
+			playerOutOfInvinci = true;
+			invinciTime = currentTime;
+		}
 	}
+	if (playerOutOfInvinci && (currentTime - invinciTime) > 1000.f)
+	{
+		player->setOutOfInvi();
+		playerInvinci = false;
+		playerOutOfInvinci = false;
+	}
+
+	for (int block = 0; block < blocks.size(); ++block)
+	{
+		if (blocks[block]->isDestroyActive() && (currentTime - blocks[block]->getDestroyTime()) > 1000.f)
+		{
+			glm::ivec2 posBl = blocks[block]->getPosition();
+			for (int i = 0; i < blocks[block]->getSize() / 8; ++i)
+			{
+				map->setTile(posBl.x / map->getTileSize() + i, posBl.y / map->getTileSize(), -1);
+			}
+			delete blocks[block];
+			for (int i = block + 1; i < blocks.size(); ++i) {
+				blocks[i - 1] = blocks[i];
+			}
+			blocks.pop_back();
+		}
+	}
+
+	if (balloonsVec.size() == 0 && lvlNumber != 0 && !playerHit)
+		return 2;
 
 	if (reStart)
 		return 1;
@@ -377,11 +428,11 @@ void Scene::generateBang() {
 	}
 }
 
-void Scene::generateBlock(const glm::ivec2& pos)
+void Scene::generateBlock(const glm::ivec2& pos, int lenght)
 {
 	blocks.push_back(new DynamicBlocks());
 	int block = blocks.size() - 1;
-	blocks[block]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	blocks[block]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, lenght);
 	blocks[block]->setPosition(pos);
 	blocks[block]->setTileMap(map);
 }
@@ -404,7 +455,7 @@ void Scene::generatePowerUp(const glm::ivec2& pos)
 		powers.push_back(new PowerUps());
 		int power = powers.size() - 1;
 		powers[power]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, r, currentTime);
-		powers[power]->setPosition(pos);
+		powers[power]->setPosition(glm::ivec2(pos.x, pos.y + 5));
 		powers[power]->setTileMap(map);
 	}
 }
@@ -467,6 +518,7 @@ void Scene::setPower(int id)
 
 	case INVINCIBILITY:
 		playerInvinci = true;
+		playerOutOfInvinci = false;
 		invinciTime = currentTime;
 		powerActive = INVINCIBILITY;
 		player->setIsInvi(true);
@@ -493,7 +545,6 @@ POWER UPS:
 T - Dynamite
 Y - Doble Wire
 U - Freeze Time
-O - Vulcan Missile
-P - Invincibility
-L - Slow Time
+I - Vulcan Missile
+O - Invincibility
 */
