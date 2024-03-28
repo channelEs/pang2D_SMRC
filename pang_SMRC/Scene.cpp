@@ -414,9 +414,9 @@ void Scene::initShaders()
 void Scene::generateBang() {
 	if (bangs.size() < numberBangs)
 	{
+		cout << "bangs size: " << bangs.size() << endl;
 		Bang* newBang = new Bang();
 		newBang->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, typeBang);
-		newBang->setTileMap(map);
 		if (typeBang == 0)
 		{
 			newBang->setPosition(glm::ivec2(player->getPosition().x + 16, player->getPosition().y + 32 - 189));
@@ -508,13 +508,11 @@ void Scene::setPower(int id)
 		powerActive = FREEZE_TIME;
 		break;
 
-	case POWER_WIRE:
-		powerActive = POWER_WIRE;
-		break;
-
 	case VULCAN_MISSILE:
 		resetPowers();
 		typeBang = 1;
+		numberBangs = 10;
+		powerActive = VULCAN_MISSILE;
 		break;
 
 	case INVINCIBILITY:
@@ -523,10 +521,6 @@ void Scene::setPower(int id)
 		invinciTime = currentTime;
 		powerActive = INVINCIBILITY;
 		player->setIsInvi(true);
-		break;
-
-	case SLOW_TIME:
-		powerActive = SLOW_TIME;
 		break;
 
 	default:

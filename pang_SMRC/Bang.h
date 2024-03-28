@@ -20,11 +20,10 @@ public:
 
 private:
 	glm::ivec2 tileMapDispl, posBangDync, posBangStatic, sizeBang;
-	int jumpAngle, startY, type;
+	int type;
 	int reloadTimer;
 	Texture spritesheet;
 	Sprite* sprite;
-	TileMap* map;
 
 };
 
