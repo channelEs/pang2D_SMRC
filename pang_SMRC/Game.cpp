@@ -71,11 +71,12 @@ void Game::render()
 		if (inLevel == 0)
 		{
 			text.render("Welcome to PANG", glm::vec2(SCREEN_WIDTH/2, 50), 50, glm::vec4(1, 1, 1, 1));
-			text.render("1 -> LEVEL_01", glm::vec2(SCREEN_WIDTH *	0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
-			text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
-			text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
-			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
-			text.render("SPACE -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			text.render("1 -> LEVEL_01", glm::vec2(SCREEN_WIDTH *	0.25, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
+			text.render("2 -> LEVEL_02", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
+			text.render("3 -> LEVEL_03", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.95), 50, glm::vec4(1, 1, 1, 1));
+			text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
+			text.render("C -> SHOOT", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.65), 50, glm::vec4(1, 1, 1, 1));
+			text.render("UP -> JUMP", glm::vec2(SCREEN_WIDTH * 0.60, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 		}
 		int power = scenes[inLevel]->getPowerActiveId();
 		text.render("POWER: " + power, glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
