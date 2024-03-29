@@ -6,6 +6,27 @@
 
 void Game::init()
 {
+	/*
+	// Check for available audio devices
+	const char** devices = engine->getAvailableDevices();
+	if (!devices || !*devices) {
+		std::cerr << "No audio devices found" << std::endl;
+		engine->drop();
+	}
+	std::cout << "Available audio devices:" << std::endl;
+	for (int i = 0; devices[i]; ++i) {
+		std::cout << devices[i] << std::endl;
+	}
+
+	// Play audio file
+	ISound* sound = engine->play2D("sounds/baba-is-theme.mp3", true, false, true);
+	if (!sound) {
+		std::cerr << "Failed to play audio file" << std::endl;
+		engine->drop();
+	}
+	*/
+
+
 	bPlay = true;
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 
@@ -80,7 +101,7 @@ void Game::render()
 	if (!instructions.isActive())
 	{
 		instructions.render();
-		text.render("SPACE -> skip instructions", glm::vec2(SCREEN_WIDTH * 0.5 - 64*3, SCREEN_HEIGHT - 20), 20, glm::vec4(1, 1, 1, 1));
+		text.render("SPACE -> skip for instructions", glm::vec2(SCREEN_WIDTH * 0.5 - 64*3, SCREEN_HEIGHT - 20), 20, glm::vec4(1, 1, 1, 1));
 	}
 	else if (inLevel == 5)
 	{
@@ -131,15 +152,15 @@ void Game::render()
 			switch (power)
 			{
 			case DOUBLE_WIRE:
-				text.render("BANG: DOUBLE_WIRE" + std::to_string(power), glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.95), 34, glm::vec4(1, 1, 1, 1));
+				text.render("BANG: DOUBLE_WIRE", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.95), 34, glm::vec4(1, 1, 1, 1));
 				break;
 
 			case VULCAN_MISSILE:
-				text.render("BANG: VULCAN MISSILE" + std::to_string(power), glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.95), 34, glm::vec4(1, 1, 1, 1));
+				text.render("BANG: VULCAN MISSILE", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.95), 34, glm::vec4(1, 1, 1, 1));
 				break;
 
 			default:
-				text.render("BANG: WIRE" + std::to_string(power), glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.95), 34, glm::vec4(1, 1, 1, 1));
+				text.render("BANG: WIRE", glm::vec2(SCREEN_WIDTH * 0.15, SCREEN_HEIGHT * 0.95), 34, glm::vec4(1, 1, 1, 1));
 				break;
 			}
 			

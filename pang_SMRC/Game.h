@@ -3,10 +3,12 @@
 
 
 #include <GLFW/glfw3.h>
+#include <irrKlang.h>
 #include "Scene.h"
 #include "Instructions.h"
 #include "Text.h"
 
+using namespace irrklang;
 
 #define SCREEN_WIDTH 48*8*3
 #define SCREEN_HEIGHT 34*8*3

@@ -262,7 +262,7 @@ int Balloon::getSize()
 	return sizeBalloon.x;
 }
 
-glm::ivec2 Balloon::getPos()
+glm::ivec2 Balloon::getPosBall()
 {
 	return posBalloon;
 }

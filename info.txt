@@ -1,13 +1,33 @@
 pang_VJ
 by Roger Canal, Sara Mendez
 
-shortcuts for Power_Ups
+functionalities:
+
+-> stairs
+-> balloon colision with vector
+-> points multiplier
+-> brick destruction
+-> two different Bangs (fire)
+-> globalPoints + stagePoints
+-> Instructions + Main Menu + Game + Game Over/Credits
+-> God mode for testing + shortcuts for testing power ups
+-> Dynamic Assets + Static TextureQuad and Texts
+-> Some animations:
+	-> Hit Animation
+	-> Invincibility Animation
+	-> Brick destruction Animation
+	-> Stairs Animation
+
+
+shortcuts for Power_Ups:
 
 T - Dynamite
-Y - Doble Wire
+Y - Double Wire
 U - Freeze Time
 I - Vulcan Missile
 O - Invincibility
+
+G - GOD MODE for every level
 
 keys:
 

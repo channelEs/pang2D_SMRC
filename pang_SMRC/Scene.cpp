@@ -112,7 +112,7 @@ void Scene::init(int lvlNum)
 	{
 		level.levelPath = "levels/level03_MAP.txt";
 		level.numBalloons = 2;
-		level.sizeBalloon = 32;
+		level.sizeBalloon = 24;
 		for (int i = 0; i < level.numBalloons; ++i) {
 			level.posBalloons.push_back(glm::vec2(i * (48 / (level.numBalloons + 2)) + (48 / (level.numBalloons + 2)), 26 * 0.1));
 		}
@@ -224,13 +224,13 @@ int Scene::update(int deltaTime)
 						sizeNew = 8;
 					if (sizeNew >= 8)
 					{
-						glm::ivec2 ballPos = balloonsVec[ball]->getPos();
+						glm::ivec2 ballPos = balloonsVec[ball]->getPosBall();
 						ballPos.x -= 4;
 						generateBalloon(ballPos, sizeNew);
 						ballPos.x += 6;
 						generateBalloon(ballPos, sizeNew);
 					}
-					generatePowerUp(glm::ivec2(balloonsVec[ball]->getPos().x, balloonsVec[ball]->getPos().y - 8));
+					generatePowerUp(glm::ivec2(balloonsVec[ball]->getPosBall().x, balloonsVec[ball]->getPosBall().y - 8));
 					
 					delete balloonsVec[ball];
 					for (int i = ball + 1; i < balloonsVec.size(); ++i) {
@@ -500,7 +500,7 @@ void Scene::setPower(int id)
 				sizeNew = 8;
 			if (sizeNew >= 8)
 			{
-				glm::ivec2 ballPos = balloonsVec[ball]->getPos();
+				glm::ivec2 ballPos = balloonsVec[ball]->getPosBall();
 				ballPos.x -= 4;
 				generateBalloon(ballPos, sizeNew);
 				ballPos.x += 6;

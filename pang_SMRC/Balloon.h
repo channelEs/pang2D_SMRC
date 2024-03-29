@@ -16,7 +16,7 @@ public:
 	bool isColisionRectangle(const glm::ivec2& pos, const glm::ivec2& rect);
 	
 	int getSize();
-	glm::ivec2 getPos();
+	glm::ivec2 getPosBall();
 
 private:
 	void setNextPos();
