@@ -84,8 +84,9 @@ void Game::render()
 	}
 	else if (inLevel == 6)
 	{
-		text.render("GAME OVER", glm::vec2(SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.3), 50, glm::vec4(1, 1, 1, 1));
-		text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.35, SCREEN_HEIGHT * 0.50), 50, glm::vec4(1, 1, 1, 1));
+		scenes[0]->render();
+		text.render("GAME OVER", glm::vec2(SCREEN_WIDTH * 0.4, SCREEN_HEIGHT * 0.2), 50, glm::vec4(1, 1, 1, 1));
+		text.render("0 -> MAIN MENU", glm::vec2(SCREEN_WIDTH * 0.35, SCREEN_HEIGHT * 0.40), 50, glm::vec4(1, 1, 1, 1));
 		text.render("MADE BY:", glm::vec2(SCREEN_WIDTH * 0.25, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 		text.render("ROGER CANAL", glm::vec2(SCREEN_WIDTH * 0.50, SCREEN_HEIGHT * 0.75), 50, glm::vec4(1, 1, 1, 1));
 		text.render("SARA MENDEZ", glm::vec2(SCREEN_WIDTH * 0.50, SCREEN_HEIGHT * 0.85), 50, glm::vec4(1, 1, 1, 1));
