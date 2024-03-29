@@ -19,12 +19,6 @@ void PowerUps::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram, 
 	sprite->setAnimationSpeed(DYNAMITE, 8);
 	sprite->addKeyframe(DYNAMITE, glm::vec2(0.5f, 0.f));
 
-	sprite->setAnimationSpeed(SLOW_TIME, 8);
-	sprite->addKeyframe(SLOW_TIME, glm::vec2(0.75f, 0.f));
-
-	sprite->setAnimationSpeed(POWER_WIRE, 8);
-	sprite->addKeyframe(POWER_WIRE, glm::vec2(0.f, 0.5f));
-
 	sprite->setAnimationSpeed(DOUBLE_WIRE, 8);
 	sprite->addKeyframe(DOUBLE_WIRE, glm::vec2(0.25f, 0.5f));
 

@@ -21,7 +21,7 @@ enum events {
 
 enum powerUps
 {
-	DYNAMITE, DOUBLE_WIRE, FREEZE_TIME, POWER_WIRE, VULCAN_MISSILE, INVINCIBILITY, SLOW_TIME
+	DYNAMITE, DOUBLE_WIRE, FREEZE_TIME, VULCAN_MISSILE, INVINCIBILITY
 };
 
 // Game is a singleton (a class with a single instance) that represents our whole application
@@ -63,7 +63,8 @@ private:
 	int inLevel;				// num of level playing
 	int playerLives;			// num of player lives
 	Text text;
-	int time, points;
+	int time, stagePoints, totalPoints;
+	bool isGodMode;
 };
 
 

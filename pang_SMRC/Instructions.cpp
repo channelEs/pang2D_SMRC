@@ -5,7 +5,7 @@
 
 enum PlayerAnims
 {
-	MENU01, MENU02, MENU03, MENU04
+	MENU01, MENU02, MENU03, MENU04, MENU05, MENU06
 };
 
 void Instructions::init()
@@ -14,20 +14,26 @@ void Instructions::init()
 
 	spritesheet.loadFromFile("assets/pang_startGame.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	sprite = Sprite::createSprite(glm::ivec2(SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f), glm::vec2(0.5, 0.5), &spritesheet, &texProgram);
-	sprite->setNumberAnimations(4);
+	sprite = Sprite::createSprite(glm::ivec2(SCREEN_WIDTH/2.0f, SCREEN_HEIGHT/2.0f), glm::vec2(0.5, 1.0/3), &spritesheet, &texProgram);
+	sprite->setNumberAnimations(6);
 
 		sprite->setAnimationSpeed(MENU01, 8);
 		sprite->addKeyframe(MENU01, glm::vec2(0.f, 0.f));
 
 		sprite->setAnimationSpeed(MENU02, 8);
-		sprite->addKeyframe(MENU02, glm::vec2(0.f, 0.5f));
+		sprite->addKeyframe(MENU02, glm::vec2(0.5f, 0.f));
 
 		sprite->setAnimationSpeed(MENU03, 8);
-		sprite->addKeyframe(MENU03, glm::vec2(0.5f, 0.f));
+		sprite->addKeyframe(MENU03, glm::vec2(0.f, 1.0 / 3));
 
 		sprite->setAnimationSpeed(MENU04, 8);
-		sprite->addKeyframe(MENU04, glm::vec2(0.5f, 0.5f));
+		sprite->addKeyframe(MENU04, glm::vec2(0.5f, 1.0 / 3));
+
+		sprite->setAnimationSpeed(MENU05, 8);
+		sprite->addKeyframe(MENU05, glm::vec2(0.f, 2.0 / 3));
+
+		sprite->setAnimationSpeed(MENU06, 8);
+		sprite->addKeyframe(MENU06, glm::vec2(0.5f, 2.0 / 3));
 
 	sceneNum = 0;
 	sprite->changeAnimation(sceneNum);
@@ -56,7 +62,7 @@ void Instructions::render()
 
 bool Instructions::isActive()
 {
-	return (sceneNum >= 4);
+	return (sceneNum >= 6);
 }
 
 void Instructions::nextScene()

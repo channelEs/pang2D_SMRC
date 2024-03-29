@@ -39,6 +39,8 @@ public:
 	int getPlayerLives();
 	int getCurrentTime();
 	int getPlayerScore();
+	void setGodMode(bool isB);
+	bool isGodModeActive();
 
 private:
 	void initShaders();
@@ -63,7 +65,7 @@ private:
 	float currentTime, playerHitTime, freezeIniTime, invinciTime;
 	glm::mat4 projection;
 	int typeBang, powerActive, numberBangs, lvlNumber;
-	bool playerHit, playerInvinci, freezedTime, playerOutOfInvinci;
+	bool playerHit, playerInvinci, freezedTime, playerOutOfInvinci, playerGodMode;
 };
 
 

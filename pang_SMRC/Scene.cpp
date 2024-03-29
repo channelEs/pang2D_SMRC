@@ -163,6 +163,7 @@ void Scene::init(int lvlNum)
 	powerActive = -1;
 	freezedTime = false;
 	playerOutOfInvinci = false;
+	playerGodMode = false;
 	resetPowers();
 }
 
@@ -205,26 +206,18 @@ int Scene::update(int deltaTime)
 				{
 
 					int bubbleSize = balloonsVec[ball]->getSize();
-					bool byPlayer = bangs[bang]->getType() == 0; // Suponiendo que tipo 0 indica roto por el jugador
-
-					if (byPlayer) {
-						player->updateStreak(bubbleSize); // Actualiza la racha basada en el tamaño de la burbuja
-						int basePoints = 0;
-						// Supongamos que defines los puntos base según el tamaño de la burbuja
-						switch (bubbleSize) {
-						case 8: basePoints = 200; break;
-						case 16: basePoints = 150; break;
-						case 32: basePoints = 100; break;
-						case 48: basePoints = 50; break;
-						default: break;
-						}
-						int points = basePoints * player->calculateStreakMultiplier();
-						player->setScore(points);
+					player->updateStreak(bubbleSize); // Actualiza la racha basada en el tamaño de la burbuja
+					int basePoints = 0;
+					// Supongamos que defines los puntos base según el tamaño de la burbuja
+					switch (bubbleSize) {
+					case 8: basePoints = 200; break;
+					case 16: basePoints = 150; break;
+					case 32: basePoints = 100; break;
+					case 48: basePoints = 50; break;
+					default: break;
 					}
-					else {
-						// Si la burbuja no es rota por el jugador, podrías querer resetear la racha
-						player->resetStreak();
-					}
+					int points = basePoints * player->calculateStreakMultiplier();
+					player->setScore(points);
 
 					int sizeNew = balloonsVec[ball]->getSize() - 16;
 					if (sizeNew == 0)
@@ -232,12 +225,12 @@ int Scene::update(int deltaTime)
 					if (sizeNew >= 8)
 					{
 						glm::ivec2 ballPos = balloonsVec[ball]->getPos();
-						ballPos.x -= 1;
+						ballPos.x -= 4;
 						generateBalloon(ballPos, sizeNew);
-						ballPos.x += 2;
+						ballPos.x += 6;
 						generateBalloon(ballPos, sizeNew);
 					}
-					generatePowerUp(balloonsVec[ball]->getPos());
+					generatePowerUp(glm::ivec2(balloonsVec[ball]->getPos().x, balloonsVec[ball]->getPos().y - 8));
 					
 					delete balloonsVec[ball];
 					for (int i = ball + 1; i < balloonsVec.size(); ++i) {
@@ -260,19 +253,44 @@ int Scene::update(int deltaTime)
 		}
 	}
 
+	for (int power = 0; power < powers.size(); ++power)
+	{
+		bool deletePower = false;
+		int powerId = powers[power]->getPowerID();
+		powers[power]->update(deltaTime);
+		if (powers[power]->isColisionRect(player->getPosition(), glm::ivec2(32, 32)))
+		{
+			setPower(powers[power]->getPowerID());
+			deletePower = true;
+		}
+		else if ((currentTime - powers[power]->getIniTime()) > 4000.f)
+		{
+			deletePower = true;
+		}
+		if (deletePower)
+		{
+			delete powers[power];
+			for (int i = power + 1; i < powers.size(); ++i) {
+				powers[i - 1] = powers[i];
+			}
+			powers.pop_back();
+		}
+	}
+
 	for (int ball = 0; ball < balloonsVec.size(); ++ball) {
 		if (!freezedTime)
 		{
-			if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)))
+			if (balloonsVec[ball]->isColisionRectangle(player->getPosition(), glm::ivec2(32, 32)) && !playerHit && !playerGodMode)
 			{
-				if (!playerHit && !playerInvinci)
+				if (!playerInvinci)
 				{
 					playerHitTime = currentTime;
 					player->setHit(true);
 					playerHit = true;
 				}
-				else if (!playerHit && playerInvinci)
+				else
 				{
+					player->resetStreak();
 					playerHit = true;
 					playerOutOfInvinci = true;
 				}
@@ -280,6 +298,7 @@ int Scene::update(int deltaTime)
 			balloonsVec[ball]->update(deltaTime);
 		}
 	}
+
 	bool reStart = false;
 	if (playerHit && !playerOutOfInvinci) 
 	{
@@ -303,29 +322,6 @@ int Scene::update(int deltaTime)
 
 	}
 
-	for (int power = 0; power < powers.size(); ++power)
-	{
-		bool deletePower = false;
-		int powerId = powers[power]->getPowerID();
-		powers[power]->update(deltaTime);
-		if (powers[power]->isColisionRect(player->getPosition(), glm::ivec2(32, 32)))
-		{
-			setPower(powers[power]->getPowerID());
-			deletePower = true;
-		}
-		else if ((currentTime - powers[power]->getIniTime()) > 2000.f)
-		{
-			deletePower = true;
-		}
-		if (deletePower)
-		{
-			delete powers[power];
-			for (int i = power + 1; i < powers.size(); ++i) {
-				powers[i - 1] = powers[i];
-			}
-			powers.pop_back();
-		}
-	}
 
 	if (freezedTime && (currentTime - freezeIniTime) > 5000.f)
 	{
@@ -474,7 +470,7 @@ void Scene::generatePowerUp(const glm::ivec2& pos)
 	int r = rand() % 100;
 	if (r < 50)
 	{
-		r = rand() % 7;
+		r = rand() % 5;
 		powers.push_back(new PowerUps());
 		int power = powers.size() - 1;
 		powers[power]->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, r, currentTime);
@@ -504,8 +500,11 @@ void Scene::setPower(int id)
 				sizeNew = 8;
 			if (sizeNew >= 8)
 			{
-				generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
-				generateBalloon(balloonsVec[ball]->getPos(), sizeNew);
+				glm::ivec2 ballPos = balloonsVec[ball]->getPos();
+				ballPos.x -= 4;
+				generateBalloon(ballPos, sizeNew);
+				ballPos.x += 6;
+				generateBalloon(ballPos, sizeNew);
 			}
 
 			delete balloonsVec[ball];
@@ -520,7 +519,8 @@ void Scene::setPower(int id)
 		break;
 
 	case DOUBLE_WIRE:
-		numberBangs = 2;
+		if (typeBang == 0)
+			numberBangs = 2;
 		powerActive = DOUBLE_WIRE;
 		break;
 
@@ -566,8 +566,18 @@ int Scene::getCurrentTime()
 	return currentTime;
 }
 
+bool Scene::isGodModeActive()
+{
+	return playerGodMode;
+}
+
 int Scene::getPlayerScore() {
 	return player->getScore();
+}
+
+void Scene::setGodMode(bool isB)
+{
+	playerGodMode = isB;
 }
 
 /*
