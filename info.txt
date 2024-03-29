@@ -17,7 +17,11 @@ functionalities:
 	-> Invincibility Animation
 	-> Brick destruction Animation
 	-> Stairs Animation
-
+-> audio
+	-> Track for level
+	-> Speedup at getting hit
+	-> final and main menu theme
+	-> get hit and shot Sound Efect
 
 shortcuts for Power_Ups:
 
