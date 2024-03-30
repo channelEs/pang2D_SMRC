@@ -38,6 +38,7 @@ public:
 	int getPowerActiveId();
 	int getPlayerLives();
 	int getCurrentTime();
+	bool canBangGenerate();
 	int getPlayerScore();
 	void setGodMode(bool isB);
 	bool isGodModeActive();

@@ -34,6 +34,8 @@ class Game
 
 private:
 	Game() {}
+
+	void setSound(int id);
 	
 public:
 	static Game &instance()
@@ -67,6 +69,9 @@ private:
 	Text text;
 	int time, stagePoints, totalPoints;
 	bool isGodMode;
+	ISoundEngine* engine;
+	ISound* sound;
+	ISound* sfx;
 };
 
 

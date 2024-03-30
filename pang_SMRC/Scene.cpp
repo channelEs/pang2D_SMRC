@@ -162,7 +162,8 @@ void Scene::init(int lvlNum)
 	playerHitTime = currentTime;
 	powerActive = -1;
 	freezedTime = false;
-	playerOutOfInvinci = false;
+	playerOutOfInvinci = true;
+	playerInvinci = false;
 	playerGodMode = false;
 	resetPowers();
 }
@@ -277,6 +278,7 @@ int Scene::update(int deltaTime)
 		}
 	}
 
+	bool hitFirst = false;
 	for (int ball = 0; ball < balloonsVec.size(); ++ball) {
 		if (!freezedTime)
 		{
@@ -287,12 +289,14 @@ int Scene::update(int deltaTime)
 					playerHitTime = currentTime;
 					player->setHit(true);
 					playerHit = true;
+					hitFirst = true;
 				}
 				else
 				{
 					player->resetStreak();
 					playerHit = true;
 					playerOutOfInvinci = true;
+					cout << "IM IN" << endl;
 				}
 			}
 			balloonsVec[ball]->update(deltaTime);
@@ -365,6 +369,9 @@ int Scene::update(int deltaTime)
 
 	if (balloonsVec.size() == 0 && lvlNumber != 0 && !playerHit)
 		return 2;
+
+	if (hitFirst)
+		return 3;
 
 	if (reStart)
 		return 1;
@@ -580,6 +587,10 @@ void Scene::setGodMode(bool isB)
 	playerGodMode = isB;
 }
 
+bool Scene::canBangGenerate()
+{
+	return bangs.size() < numberBangs;
+}
 /*
 POWER UPS:
 

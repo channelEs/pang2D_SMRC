@@ -6,6 +6,7 @@
 
 void Game::init()
 {
+	engine = createIrrKlangDevice();
 	/*
 	// Check for available audio devices
 	const char** devices = engine->getAvailableDevices();
@@ -18,13 +19,13 @@ void Game::init()
 		std::cout << devices[i] << std::endl;
 	}
 
+	*/
 	// Play audio file
-	ISound* sound = engine->play2D("sounds/baba-is-theme.mp3", true, false, true);
+	ISound* sound = engine->play2D("sounds/main-lofi.mp3", true, false, true);
 	if (!sound) {
 		std::cerr << "Failed to play audio file" << std::endl;
 		engine->drop();
 	}
-	*/
 
 
 	bPlay = true;
@@ -57,14 +58,21 @@ bool Game::update(int deltaTime)
 	else if (inLevel < scenes.size())
 	{
 		int event = scenes[inLevel]->update(deltaTime);
+		if (event == 3)
+		{
+			sound = engine->play2D("sounds/wilhelm.mp3", false, false, true);
+		}
 		if (event == 1)
 		{
 			delete scenes[inLevel];
 			scenes[inLevel] = new Scene();
 			scenes[inLevel]->init(inLevel);
 			--playerLives;
+			setSound(inLevel);
+
 			if (playerLives == 0)
 			{
+				setSound(4);
 				inLevel = 6;
 				playerLives = 3;
 			}
@@ -81,6 +89,8 @@ bool Game::update(int deltaTime)
 		}
 		if (event == 6)
 		{
+			setSound(4);
+
 			delete scenes[inLevel];
 			scenes[inLevel] = new Scene();
 			scenes[inLevel]->init(inLevel);
@@ -88,6 +98,7 @@ bool Game::update(int deltaTime)
 			isGodMode = false;
 		}
 		if (time == 0) {
+			setSound(4);
 			inLevel = 6;
 		}
 	}
@@ -188,11 +199,13 @@ void Game::keyPressed(int key)
 		bPlay = false;
 	if (key == GLFW_KEY_0)
 	{
+		setSound(0);
 		inLevel = 0;
 		totalPoints = 0;
 	}
 	if (key == GLFW_KEY_1)
 	{
+		setSound(1);
 		inLevel = 1;
 		delete scenes[inLevel];
 		scenes[inLevel] = new Scene();
@@ -200,6 +213,7 @@ void Game::keyPressed(int key)
 	}
 	if (key == GLFW_KEY_2)
 	{
+		setSound(2);
 		inLevel = 2;
 		delete scenes[inLevel];
 		scenes[inLevel] = new Scene();
@@ -207,6 +221,7 @@ void Game::keyPressed(int key)
 	}
 	if (key == GLFW_KEY_3)
 	{
+		setSound(3);
 		inLevel = 3;
 		delete scenes[inLevel];
 		scenes[inLevel] = new Scene();
@@ -217,6 +232,8 @@ void Game::keyPressed(int key)
 		instructions.nextScene();
 	}
 	if (key == GLFW_KEY_C) {
+		if (scenes[inLevel]->canBangGenerate())
+			sound = engine->play2D("sounds/blaster.mp3", false, false, true);
 		scenes[inLevel]->generateBang();
 	}
 	if (key == GLFW_KEY_T)
@@ -269,6 +286,49 @@ bool Game::getKey(int key) const
 {
 	return keys[key];
 }
+
+void Game::setSound(int id)
+{
+	engine->removeAllSoundSources();
+	switch (id)
+	{
+	case 0:
+		sound = engine->play2D("sounds/main-lofi.mp3", true, false, true);
+		sound->setVolume(0.9f);
+		break;
+
+	case 1:
+		sound = engine->play2D("sounds/barna-vibes.mp3", true, false, true);
+		sound->setVolume(0.7f);
+		break;
+	
+	case 2:
+		sound = engine->play2D("sounds/london-vibes.mp3", true, false, true);
+		sound->setVolume(0.7f);
+		break;
+
+	case 3:
+		sound = engine->play2D("sounds/newYork-vibes.mp3", true, false, true);
+		sound->setVolume(0.7f);
+		sound->setPlayPosition(5000);
+		break;
+
+	case 4:
+		sound = engine->play2D("sounds/finale.mp3", true, false, true);
+		sound->setVolume(0.9f);
+		sound->setPlayPosition(64000);
+		break;
+
+	default:
+		break;
+	}
+
+	if (playerLives == 2)
+		sound->setPlaybackSpeed(1.2f);
+	else if (playerLives == 1)
+		sound->setPlaybackSpeed(1.4f);
+}
+
 
 
 
